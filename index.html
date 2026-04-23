@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoData Saudi | بيانات بيئية لحظية</title>
+    <title>EcoData Saudi | بيانات بيئية لحظية - Open-Meteo</title>
     <style>
         * {
             margin: 0;
@@ -183,6 +183,15 @@
             margin-top: 40px;
         }
         
+        .api-badge {
+            background: #e8f5e9;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        
         @media (max-width: 768px) {
             nav a {
                 display: inline-block;
@@ -199,10 +208,13 @@
     <header>
         <div class="container">
             <h1>🌿 EcoData Saudi</h1>
-            <p>بيانات جودة الهواء - تحديث لحظي من محطات الرصد</p>
+            <p>بيانات جودة الهواء - تحديث لحظي عبر Open-Meteo API</p>
             <div class="last-update">
                 آخر تحديث: <span id="updateTime">جاري التحميل...</span>
                 <button class="refresh-btn" onclick="fetchAirQuality()">🔄 تحديث الآن</button>
+            </div>
+            <div class="api-badge">
+                ⚡ مجاني 100% | بدون توكين | تحديث تلقائي
             </div>
         </div>
     </header>
@@ -219,7 +231,7 @@
     <main class="container">
         <section id="home">
             <h2>مرحباً بكم في EcoData Saudi</h2>
-            <p>نقدم بيانات بيئية لحظية وموثوقة لدعم المستثمرين واتخاذ القرارات المستدامة في رؤية السعودية 2030.</p>
+            <p>نقدم بيانات بيئية لحظية وموثوقة من Open-Meteo API - خدمة عالمية مجانية تعتمد على نماذج جودة الهواء العالمية.</p>
             
             <div class="stats">
                 <div class="stat-card">
@@ -229,13 +241,13 @@
                 </div>
                 <div class="stat-card">
                     <h3>📊</h3>
-                    <p>3 مؤشرات</p>
-                    <small>AQI, PM2.5, PM10</small>
+                    <p>US AQI</p>
+                    <small>المؤشر الأمريكي</small>
                 </div>
                 <div class="stat-card">
                     <h3>⚡</h3>
-                    <p>لحظياً</p>
-                    <small>تحديث تلقائي</small>
+                    <p>مجاني</p>
+                    <small>بدون توكين</small>
                 </div>
             </div>
         </section>
@@ -243,10 +255,10 @@
         <section id="dashboard">
             <h2>📈 جودة الهواء - المدن السعودية</h2>
             <div id="airQualityTable">
-                <div class="loading">⏳ جاري تحميل بيانات جودة الهواء...</div>
+                <div class="loading">⏳ جاري تحميل بيانات جودة الهواء من Open-Meteo...</div>
             </div>
             <p style="margin-top: 15px; font-size: 12px; color: #666;">
-                📌 تحديث تلقائي كل 5 دقائق | المصدر: WAQI API
+                📌 المصدر: Open-Meteo API | تحديث تلقائي كل ساعة | بيانات US AQI
             </p>
         </section>
 
@@ -260,8 +272,8 @@
                 </div>
                 <div class="stat-card">
                     <h3>⚙️</h3>
-                    <p>API للبيانات</p>
-                    <a href="#" class="btn" onclick="alert('API متاحة للمطورين - تواصل معنا')">طلب وصول</a>
+                    <p>مصدر البيانات</p>
+                    <a href="https://open-meteo.com" target="_blank" class="btn">Open-Meteo.com</a>
                 </div>
             </div>
         </section>
@@ -282,24 +294,53 @@
     <footer>
         <div class="container">
             <p>© 2025 EcoData Saudi - منصة البيانات البيئية السعودية</p>
-            <p style="font-size: 12px; margin-top: 10px;">بيانات لحظية | دعم رؤية السعودية 2030</p>
+            <p style="font-size: 12px; margin-top: 10px;">بيانات من Open-Meteo | CC BY 4.0 | رؤية السعودية 2030</p>
         </div>
     </footer>
 
     <script>
-        // توكين API الخاص بك
-        const API_TOKEN = '2eb288a2b77aa5893df035de5a8d8dfdb452cf55';
-        
-        // قائمة المدن السعودية
+        // إحداثيات المدن السعودية
         const cities = [
-            { name: 'الرياض', apiName: 'riyadh' },
-            { name: 'جدة', apiName: 'jeddah' },
-            { name: 'الدمام', apiName: 'dammam' },
-            { name: 'مكة', apiName: 'mecca' }
+            { name: 'الرياض', lat: 24.7136, lon: 46.6753 },
+            { name: 'جدة', lat: 21.5433, lon: 39.1728 },
+            { name: 'الدمام', lat: 26.3927, lon: 50.1227 },
+            { name: 'مكة', lat: 21.3891, lon: 39.8579 },
+            { name: 'المدينة', lat: 24.5247, lon: 39.5692 },
+            { name: 'أبها', lat: 18.2164, lon: 42.5053 }
         ];
         
-        // دالة لتحديد حالة جودة الهواء
+        // تحويل قيمة PM2.5 إلى US AQI
+        // بناءً على معايير وكالة حماية البيئة الأمريكية (EPA)
+        function calculateUS_AQI(pm25) {
+            if (pm25 === null) return null;
+            
+            // معادلة EPA لتحويل PM2.5 إلى AQI
+            // المصدر: https://www.airnow.gov/aqi/aqi-calculator-concentration/
+            
+            if (pm25 <= 12.0) {
+                // جيد
+                return Math.round((50 / 12) * pm25);
+            } else if (pm25 <= 35.4) {
+                // متوسط
+                return Math.round(50 + (pm25 - 12) * (50 / 23.4));
+            } else if (pm25 <= 55.4) {
+                // غير صحي للحساسين
+                return Math.round(100 + (pm25 - 35.4) * (50 / 20));
+            } else if (pm25 <= 150.4) {
+                // غير صحي
+                return Math.round(150 + (pm25 - 55.4) * (50 / 95));
+            } else if (pm25 <= 250.4) {
+                // غير صحي جداً
+                return Math.round(200 + (pm25 - 150.4) * (50 / 100));
+            } else {
+                // خطير
+                return Math.round(300 + (pm25 - 250.4) * (50 / 100));
+            }
+        }
+        
+        // دالة لتحديد حالة جودة الهواء بناءً على AQI
         function getAirQualityStatus(aqi) {
+            if (aqi === null) return { text: 'غير متوفر', class: 'status-moderate', icon: '⚠️' };
             if (aqi <= 50) return { text: 'جيد', class: 'status-good', icon: '🟢' };
             if (aqi <= 100) return { text: 'متوسط', class: 'status-moderate', icon: '🟡' };
             if (aqi <= 150) return { text: 'غير صحي للحساسين', class: 'status-unhealthy', icon: '🟠' };
@@ -308,37 +349,34 @@
             return { text: 'خطير', class: 'status-hazardous', icon: '💀' };
         }
         
-        // الدالة الرئيسية لجلب البيانات
+        // الدالة الرئيسية لجلب البيانات من Open-Meteo API
         async function fetchAirQuality() {
             const tableContainer = document.getElementById('airQualityTable');
-            tableContainer.innerHTML = '<div class="loading">⏳ جاري تحديث البيانات...</div>';
+            tableContainer.innerHTML = '<div class="loading">⏳ جاري تحديث البيانات من Open-Meteo...</div>';
             
             let results = [];
+            let successCount = 0;
             
             for (const city of cities) {
                 try {
-                    // استخدام الرابط مع v2 للحصول على بيانات أدق
-                    const response = await fetch(`https://api.waqi.info/v2/feed/${city.apiName}/?token=${API_TOKEN}`);
+                    // استخدام Open-Meteo Air Quality API - بدون توكين
+                    // نجلب us_aqi مباشرة و PM2.5 و PM10
+                    const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi,pm10,pm2_5&timezone=auto`;
+                    
+                    const response = await fetch(url);
                     
                     if (response.ok) {
                         const data = await response.json();
                         
-                        if (data.status === 'ok') {
-                            // التأكد من أننا نأخذ AQI الصحيح من المصدر الرئيسي
-                            let aqi = data.data.aqi;
+                        if (data.current) {
+                            // البيانات متوفرة
+                            let aqi = data.current.us_aqi || null;
+                            const pm25 = data.current.pm2_5 || null;
+                            const pm10 = data.current.pm10 || null;
                             
-                            // إذا كان AQI أقل من 50 وأكبر من 0، نتأكد أنه صحيح
-                            // بعض الأحيان API يعطي قيم PM2.5 مكان AQI لهذا نتحقق
-                            const pm25 = data.data.iaqi?.pm25?.v || null;
-                            const pm10 = data.data.iaqi?.pm10?.v || null;
-                            
-                            // إذا كان AQI منخفض جداً (أقل من 10)可能存在 خطأ، نستخدم تقدير من PM2.5
-                            if (aqi < 10 && pm25) {
-                                // تحويل تقريبي من PM2.5 إلى AQI
-                                if (pm25 <= 12) aqi = Math.round(pm25 * (50/12));
-                                else if (pm25 <= 35.4) aqi = Math.round(50 + (pm25 - 12) * (50/23.4));
-                                else if (pm25 <= 55.4) aqi = Math.round(100 + (pm25 - 35.4) * (50/20));
-                                else aqi = Math.round(150 + (pm25 - 55.4) * (50/95));
+                            // إذا لم يكن us_aqi متوفراً، نحسبه من PM2.5
+                            if (!aqi && pm25) {
+                                aqi = calculateUS_AQI(pm25);
                             }
                             
                             const status = getAirQualityStatus(aqi);
@@ -349,12 +387,15 @@
                                 pm25: pm25,
                                 pm10: pm10,
                                 status: status,
-                                time: new Date().toLocaleTimeString('ar-SA')
+                                time: new Date().toLocaleTimeString('ar-SA'),
+                                error: false
                             });
+                            
+                            if (aqi !== null) successCount++;
                         } else {
                             results.push({
                                 name: city.name,
-                                aqi: '—',
+                                aqi: null,
                                 pm25: null,
                                 pm10: null,
                                 status: { text: 'لا توجد بيانات', class: 'status-moderate', icon: '⚠️' },
@@ -368,7 +409,7 @@
                     console.log(`خطأ في جلب بيانات ${city.name}:`, error);
                     results.push({
                         name: city.name,
-                        aqi: '—',
+                        aqi: null,
                         pm25: null,
                         pm10: null,
                         status: { text: 'خطأ في الاتصال', class: 'status-moderate', icon: '❌' },
@@ -376,12 +417,12 @@
                     });
                 }
                 
-                // تأخير بسيط بين الطلبات عشان ما نضغط على API
-                await new Promise(resolve => setTimeout(resolve, 500));
+                // تأخير بسيط بين الطلبات لتجنب الضغط على API
+                await new Promise(resolve => setTimeout(resolve, 300));
             }
             
             displayResults(results);
-            document.getElementById('citiesCount').innerHTML = results.filter(r => !r.error).length + ' مدن';
+            document.getElementById('citiesCount').innerHTML = successCount + ' مدن';
         }
         
         // عرض النتائج في الجدول
@@ -393,7 +434,7 @@
                     <thead>
                         <tr>
                             <th style="padding: 12px; background: #1e6f3f; color: white;">المدينة</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">AQI</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">US AQI</th>
                             <th style="padding: 12px; background: #1e6f3f; color: white;">PM2.5</th>
                             <th style="padding: 12px; background: #1e6f3f; color: white;">PM10</th>
                             <th style="padding: 12px; background: #1e6f3f; color: white;">الحالة</th>
@@ -404,12 +445,11 @@
             `;
             
             for (const city of results) {
-                const pm25Display = city.pm25 ? `${city.pm25} µg/m³` : '—';
-                const pm10Display = city.pm10 ? `${city.pm10} µg/m³` : '—';
-                
-                // تحديد لون خلفية AQI حسب القيمة
+                // تحديد لون AQI
                 let aqiColor = '#333';
-                if (city.aqi !== '—') {
+                let aqiDisplay = '—';
+                if (city.aqi !== null && !city.error) {
+                    aqiDisplay = city.aqi;
                     if (city.aqi <= 50) aqiColor = '#2ecc71';
                     else if (city.aqi <= 100) aqiColor = '#f39c12';
                     else if (city.aqi <= 150) aqiColor = '#e67e22';
@@ -417,14 +457,17 @@
                     else aqiColor = '#8e44ad';
                 }
                 
+                const pm25Display = city.pm25 ? `${Math.round(city.pm25 * 10) / 10} µg/m³` : '—';
+                const pm10Display = city.pm10 ? `${Math.round(city.pm10 * 10) / 10} µg/m³` : '—';
+                
                 tableHTML += `
                     <tr style="border-bottom: 1px solid #ddd;">
                         <td style="padding: 12px;"><strong>${city.name}</strong></td>
-                        <td style="padding: 12px;"><span style="font-size: 24px; font-weight: bold; color: ${aqiColor};">${city.aqi}</span></td>
+                        <td style="padding: 12px;"><span style="font-size: 24px; font-weight: bold; color: ${aqiColor};">${aqiDisplay}</span></td>
                         <td style="padding: 12px;">${pm25Display}</td>
                         <td style="padding: 12px;">${pm10Display}</td>
                         <td style="padding: 12px;"><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
-                        <td style="padding: 12px;">${city.error ? '—' : city.time}</td>
+                        <td style="padding: 12px; font-size: 12px;">${city.error ? '—' : city.time}</td>
                     </tr>
                 `;
             }
@@ -448,10 +491,11 @@
         // تحميل البيانات عند فتح الصفحة
         fetchAirQuality();
         
-        // تحديث تلقائي كل 5 دقائق
-        setInterval(fetchAirQuality, 300000);
+        // تحديث تلقائي كل ساعة (3600000 ملي ثانية)
+        // Open-Meteo تحديث البيانات كل ساعة [citation:9]
+        setInterval(fetchAirQuality, 3600000);
         
-        console.log('🌿 EcoData Saudi - النظام شغال مع التوكين ✅');
+        console.log('🌿 EcoData Saudi - Open-Meteo API | مجاني 100% | تحديث تلقائي ✅');
     </script>
 </body>
 </html>
