@@ -3,218 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoData Saudi | بيانات بيئية لحظية - Open-Meteo</title>
+    <title>EcoData Saudi | بيانات بيئية حية</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f7fa;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #1e6f3f, #2d8a4e);
-            color: white;
-            padding: 40px 0;
-            text-align: center;
-        }
-        
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .last-update {
-            font-size: 14px;
-            margin-top: 10px;
-            opacity: 0.9;
-        }
-        
-        nav {
-            background: #2c3e50;
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        
-        nav a:hover {
-            background: #1e6f3f;
-        }
-        
-        section {
-            background: white;
-            margin: 30px 0;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        h2 {
-            color: #1e6f3f;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #1e6f3f;
-            display: inline-block;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        
-        .stat-card {
-            text-align: center;
-            padding: 20px;
-            background: #ecf0f1;
-            border-radius: 10px;
-        }
-        
-        .stat-card h3 {
-            font-size: 2.5em;
-            color: #1e6f3f;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background: #1e6f3f;
-            color: white;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-size: 18px;
-            color: #1e6f3f;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f7fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background: linear-gradient(135deg, #1e6f3f, #2d8a4e); color: white; padding: 40px 0; text-align: center; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .last-update { font-size: 14px; margin-top: 10px; opacity: 0.9; }
+        nav { background: #2c3e50; padding: 15px 0; position: sticky; top: 0; }
+        nav a { color: white; text-decoration: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; transition: background 0.3s; }
+        nav a:hover { background: #1e6f3f; }
+        section { background: white; margin: 30px 0; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #1e6f3f; margin-bottom: 20px; border-bottom: 3px solid #1e6f3f; display: inline-block; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        .stat-card { text-align: center; padding: 20px; background: #ecf0f1; border-radius: 10px; }
+        .stat-card h3 { font-size: 2.5em; color: #1e6f3f; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #ddd; }
+        th { background: #1e6f3f; color: white; }
+        .loading { text-align: center; padding: 20px; font-size: 18px; color: #1e6f3f; }
+        .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; }
         .status-good { background: #2ecc71; color: white; }
         .status-moderate { background: #f39c12; color: white; }
         .status-unhealthy { background: #e67e22; color: white; }
         .status-very-unhealthy { background: #e74c3c; color: white; }
         .status-hazardous { background: #8e44ad; color: white; }
-        
-        .refresh-btn {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: #1e6f3f;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-        
-        .aqi-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        form input, form textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        form button {
-            background: #1e6f3f;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        footer {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 40px;
-        }
-        
-        .api-badge {
-            background: #e8f5e9;
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 12px;
-        }
-        
-        @media (max-width: 768px) {
-            nav a {
-                display: inline-block;
-                margin: 5px;
-            }
-            th, td {
-                padding: 8px;
-                font-size: 12px;
-            }
-        }
+        .refresh-btn { background: #2c3e50; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        .btn { display: inline-block; background: #1e6f3f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+        .aqi-value { font-size: 24px; font-weight: bold; }
+        form input, form textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        form button { background: #1e6f3f; color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 20px 0; margin-top: 40px; }
+        @media (max-width: 768px) { th, td { padding: 8px; font-size: 12px; } }
+        .data-source-note { font-size: 11px; color: #888; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
     <header>
         <div class="container">
             <h1>🌿 EcoData Saudi</h1>
-            <p>بيانات جودة الهواء - تحديث لحظي عبر Open-Meteo API</p>
+            <p>بيانات جودة الهواء - تحديث لحظي</p>
             <div class="last-update">
                 آخر تحديث: <span id="updateTime">جاري التحميل...</span>
                 <button class="refresh-btn" onclick="fetchAirQuality()">🔄 تحديث الآن</button>
-            </div>
-            <div class="api-badge">
-                ⚡ مجاني 100% | بدون توكين | تحديث تلقائي
             </div>
         </div>
     </header>
@@ -223,7 +55,6 @@
         <div class="container">
             <a href="#home">الرئيسية</a>
             <a href="#dashboard">جودة الهواء</a>
-            <a href="#data">البيانات</a>
             <a href="#contact">تواصل</a>
         </div>
     </nav>
@@ -231,115 +62,57 @@
     <main class="container">
         <section id="home">
             <h2>مرحباً بكم في EcoData Saudi</h2>
-            <p>نقدم بيانات بيئية لحظية وموثوقة من Open-Meteo API - خدمة عالمية مجانية تعتمد على نماذج جودة الهواء العالمية.</p>
-            
+            <p>نقدم بيانات بيئية لحظية وموثوقة لدعم المستثمرين في رؤية السعودية 2030.</p>
             <div class="stats">
-                <div class="stat-card">
-                    <h3>🌍</h3>
-                    <p id="citiesCount">4 مدن</p>
-                    <small>مراقبة جودة الهواء</small>
-                </div>
-                <div class="stat-card">
-                    <h3>📊</h3>
-                    <p>US AQI</p>
-                    <small>المؤشر الأمريكي</small>
-                </div>
-                <div class="stat-card">
-                    <h3>⚡</h3>
-                    <p>مجاني</p>
-                    <small>بدون توكين</small>
-                </div>
+                <div class="stat-card"><h3>🌍</h3><p id="citiesCount">0 مدن</p><small>مراقبة جودة الهواء</small></div>
+                <div class="stat-card"><h3>📊</h3><p>AQI</p><small>مؤشر جودة الهواء</small></div>
+                <div class="stat-card"><h3>⚡</h3><p>تلقائي</p><small>تحديث كل ساعة</small></div>
             </div>
         </section>
 
         <section id="dashboard">
             <h2>📈 جودة الهواء - المدن السعودية</h2>
-            <div id="airQualityTable">
-                <div class="loading">⏳ جاري تحميل بيانات جودة الهواء من Open-Meteo...</div>
-            </div>
-            <p style="margin-top: 15px; font-size: 12px; color: #666;">
-                📌 المصدر: Open-Meteo API | تحديث تلقائي كل ساعة | بيانات US AQI
-            </p>
-        </section>
-
-        <section id="data">
-            <h2>📥 تحميل البيانات والمراجع</h2>
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>📄</h3>
-                    <p>تقرير الاستثمار البيئي</p>
-                    <a href="#" class="btn" onclick="alert('قريباً - التقرير قيد الإعداد')">تحميل PDF</a>
-                </div>
-                <div class="stat-card">
-                    <h3>⚙️</h3>
-                    <p>مصدر البيانات</p>
-                    <a href="https://open-meteo.com" target="_blank" class="btn">Open-Meteo.com</a>
-                </div>
-            </div>
+            <div id="airQualityTable"><div class="loading">⏳ جاري تحميل البيانات...</div></div>
+            <div class="data-source-note">📌 مصدر البيانات: Open-Meteo API (مجاني - بدون توكين)</div>
         </section>
 
         <section id="contact">
             <h2>📞 تواصل معنا</h2>
-            <p>للمستثمرين والجهات المهتمة - نرحب باستفساراتكم</p>
             <form id="contactForm">
                 <input type="text" placeholder="الاسم الكامل" id="name" required>
                 <input type="email" placeholder="البريد الإلكتروني" id="email" required>
                 <input type="text" placeholder="اسم المؤسسة" id="company">
-                <textarea placeholder="استفسارك أو طلبك..." rows="5" id="message"></textarea>
-                <button type="submit">إرسال الطلب</button>
+                <textarea placeholder="استفسارك..." rows="5" id="message"></textarea>
+                <button type="submit">إرسال</button>
             </form>
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>© 2025 EcoData Saudi - منصة البيانات البيئية السعودية</p>
-            <p style="font-size: 12px; margin-top: 10px;">بيانات من Open-Meteo | CC BY 4.0 | رؤية السعودية 2030</p>
-        </div>
-    </footer>
+    <footer><div class="container"><p>© 2025 EcoData Saudi - بيانات لحظية | رؤية السعودية 2030</p></div></footer>
 
     <script>
         // إحداثيات المدن السعودية
         const cities = [
             { name: 'الرياض', lat: 24.7136, lon: 46.6753 },
             { name: 'جدة', lat: 21.5433, lon: 39.1728 },
-            { name: 'الدمام', lat: 26.3927, lon: 50.1227 },
             { name: 'مكة', lat: 21.3891, lon: 39.8579 },
             { name: 'المدينة', lat: 24.5247, lon: 39.5692 },
+            { name: 'الدمام', lat: 26.3927, lon: 50.1227 },
             { name: 'أبها', lat: 18.2164, lon: 42.5053 }
         ];
         
-        // تحويل قيمة PM2.5 إلى US AQI
-        // بناءً على معايير وكالة حماية البيئة الأمريكية (EPA)
-        function calculateUS_AQI(pm25) {
-            if (pm25 === null) return null;
-            
-            // معادلة EPA لتحويل PM2.5 إلى AQI
-            // المصدر: https://www.airnow.gov/aqi/aqi-calculator-concentration/
-            
-            if (pm25 <= 12.0) {
-                // جيد
-                return Math.round((50 / 12) * pm25);
-            } else if (pm25 <= 35.4) {
-                // متوسط
-                return Math.round(50 + (pm25 - 12) * (50 / 23.4));
-            } else if (pm25 <= 55.4) {
-                // غير صحي للحساسين
-                return Math.round(100 + (pm25 - 35.4) * (50 / 20));
-            } else if (pm25 <= 150.4) {
-                // غير صحي
-                return Math.round(150 + (pm25 - 55.4) * (50 / 95));
-            } else if (pm25 <= 250.4) {
-                // غير صحي جداً
-                return Math.round(200 + (pm25 - 150.4) * (50 / 100));
-            } else {
-                // خطير
-                return Math.round(300 + (pm25 - 250.4) * (50 / 100));
-            }
+        // تحويل PM2.5 إلى US AQI (معادلة EPA)
+        function calculateAQI(pm25) {
+            if (pm25 === null || pm25 === undefined) return null;
+            if (pm25 <= 12.0) return Math.round((50 / 12) * pm25);
+            if (pm25 <= 35.4) return Math.round(50 + (pm25 - 12) * (50 / 23.4));
+            if (pm25 <= 55.4) return Math.round(100 + (pm25 - 35.4) * (50 / 20));
+            if (pm25 <= 150.4) return Math.round(150 + (pm25 - 55.4) * (50 / 95));
+            if (pm25 <= 250.4) return Math.round(200 + (pm25 - 150.4) * (50 / 100));
+            return Math.round(300 + (pm25 - 250.4) * (50 / 100));
         }
         
-        // دالة لتحديد حالة جودة الهواء بناءً على AQI
-        function getAirQualityStatus(aqi) {
+        function getStatus(aqi) {
             if (aqi === null) return { text: 'غير متوفر', class: 'status-moderate', icon: '⚠️' };
             if (aqi <= 50) return { text: 'جيد', class: 'status-good', icon: '🟢' };
             if (aqi <= 100) return { text: 'متوسط', class: 'status-moderate', icon: '🟡' };
@@ -349,153 +122,111 @@
             return { text: 'خطير', class: 'status-hazardous', icon: '💀' };
         }
         
-        // الدالة الرئيسية لجلب البيانات من Open-Meteo API
+        async function fetchFromOpenMeteo(city) {
+            const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=pm10,pm2_5&timezone=auto`;
+            const response = await fetch(url);
+            if (!response.ok) return null;
+            const data = await response.json();
+            if (data.current) {
+                const pm25 = data.current.pm2_5;
+                const pm10 = data.current.pm10;
+                const aqi = calculateAQI(pm25);
+                return { aqi, pm25, pm10 };
+            }
+            return null;
+        }
+        
         async function fetchAirQuality() {
-            const tableContainer = document.getElementById('airQualityTable');
-            tableContainer.innerHTML = '<div class="loading">⏳ جاري تحديث البيانات من Open-Meteo...</div>';
+            const container = document.getElementById('airQualityTable');
+            container.innerHTML = '<div class="loading">⏳ جاري تحديث البيانات...</div>';
             
             let results = [];
             let successCount = 0;
             
             for (const city of cities) {
                 try {
-                    // استخدام Open-Meteo Air Quality API - بدون توكين
-                    // نجلب us_aqi مباشرة و PM2.5 و PM10
-                    const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi,pm10,pm2_5&timezone=auto`;
+                    const data = await fetchFromOpenMeteo(city);
                     
-                    const response = await fetch(url);
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        
-                        if (data.current) {
-                            // البيانات متوفرة
-                            let aqi = data.current.us_aqi || null;
-                            const pm25 = data.current.pm2_5 || null;
-                            const pm10 = data.current.pm10 || null;
-                            
-                            // إذا لم يكن us_aqi متوفراً، نحسبه من PM2.5
-                            if (!aqi && pm25) {
-                                aqi = calculateUS_AQI(pm25);
-                            }
-                            
-                            const status = getAirQualityStatus(aqi);
-                            
-                            results.push({
-                                name: city.name,
-                                aqi: aqi,
-                                pm25: pm25,
-                                pm10: pm10,
-                                status: status,
-                                time: new Date().toLocaleTimeString('ar-SA'),
-                                error: false
-                            });
-                            
-                            if (aqi !== null) successCount++;
-                        } else {
-                            results.push({
-                                name: city.name,
-                                aqi: null,
-                                pm25: null,
-                                pm10: null,
-                                status: { text: 'لا توجد بيانات', class: 'status-moderate', icon: '⚠️' },
-                                error: true
-                            });
-                        }
+                    if (data && data.aqi !== null) {
+                        const status = getStatus(data.aqi);
+                        results.push({
+                            name: city.name,
+                            aqi: data.aqi,
+                            pm25: data.pm25,
+                            pm10: data.pm10,
+                            status: status,
+                            time: new Date().toLocaleTimeString('ar-SA'),
+                            error: false
+                        });
+                        successCount++;
                     } else {
-                        throw new Error('API request failed');
+                        results.push({
+                            name: city.name,
+                            aqi: null,
+                            pm25: null,
+                            pm10: null,
+                            status: { text: 'لا توجد بيانات', class: 'status-moderate', icon: '⚠️' },
+                            error: true
+                        });
                     }
                 } catch (error) {
-                    console.log(`خطأ في جلب بيانات ${city.name}:`, error);
+                    console.log(`خطأ في ${city.name}:`, error);
                     results.push({
                         name: city.name,
                         aqi: null,
                         pm25: null,
                         pm10: null,
-                        status: { text: 'خطأ في الاتصال', class: 'status-moderate', icon: '❌' },
+                        status: { text: 'خطأ', class: 'status-moderate', icon: '❌' },
                         error: true
                     });
                 }
-                
-                // تأخير بسيط بين الطلبات لتجنب الضغط على API
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(r => setTimeout(r, 500));
             }
             
             displayResults(results);
             document.getElementById('citiesCount').innerHTML = successCount + ' مدن';
         }
         
-        // عرض النتائج في الجدول
         function displayResults(results) {
-            const tableContainer = document.getElementById('airQualityTable');
-            
-            let tableHTML = `
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">المدينة</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">US AQI</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">PM2.5</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">PM10</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">الحالة</th>
-                            <th style="padding: 12px; background: #1e6f3f; color: white;">آخر تحديث</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+            let html = `<table><thead><tr><th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th><th>آخر تحديث</th></tr></thead><tbody>`;
             
             for (const city of results) {
-                // تحديد لون AQI
-                let aqiColor = '#333';
+                let color = '#333';
                 let aqiDisplay = '—';
-                if (city.aqi !== null && !city.error) {
+                if (city.aqi !== null) {
                     aqiDisplay = city.aqi;
-                    if (city.aqi <= 50) aqiColor = '#2ecc71';
-                    else if (city.aqi <= 100) aqiColor = '#f39c12';
-                    else if (city.aqi <= 150) aqiColor = '#e67e22';
-                    else if (city.aqi <= 200) aqiColor = '#e74c3c';
-                    else aqiColor = '#8e44ad';
+                    if (city.aqi <= 50) color = '#2ecc71';
+                    else if (city.aqi <= 100) color = '#f39c12';
+                    else if (city.aqi <= 150) color = '#e67e22';
+                    else if (city.aqi <= 200) color = '#e74c3c';
+                    else color = '#8e44ad';
                 }
                 
                 const pm25Display = city.pm25 ? `${Math.round(city.pm25 * 10) / 10} µg/m³` : '—';
                 const pm10Display = city.pm10 ? `${Math.round(city.pm10 * 10) / 10} µg/m³` : '—';
                 
-                tableHTML += `
-                    <tr style="border-bottom: 1px solid #ddd;">
-                        <td style="padding: 12px;"><strong>${city.name}</strong></td>
-                        <td style="padding: 12px;"><span style="font-size: 24px; font-weight: bold; color: ${aqiColor};">${aqiDisplay}</span></td>
-                        <td style="padding: 12px;">${pm25Display}</td>
-                        <td style="padding: 12px;">${pm10Display}</td>
-                        <td style="padding: 12px;"><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
-                        <td style="padding: 12px; font-size: 12px;">${city.error ? '—' : city.time}</td>
-                    </tr>
-                `;
+                html += `<tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 12px;"><strong>${city.name}</strong></td>
+                    <td style="padding: 12px;"><span style="font-size: 24px; font-weight: bold; color: ${color};">${aqiDisplay}</span></td>
+                    <td style="padding: 12px;">${pm25Display}</td>
+                    <td style="padding: 12px;">${pm10Display}</td>
+                    <td style="padding: 12px;"><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
+                    <td style="padding: 12px;">${city.error ? '—' : city.time}</td>
+                </tr>`;
             }
             
-            tableHTML += `
-                    </tbody>
-                </table>
-            `;
-            
-            tableContainer.innerHTML = tableHTML;
+            document.getElementById('airQualityTable').innerHTML = html + `</tbody></table>`;
             document.getElementById('updateTime').innerHTML = new Date().toLocaleString('ar-SA');
         }
         
-        // نموذج التواصل
         document.getElementById('contactForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('✅ شكراً لتواصلك معنا! سنرد عليك خلال 24 ساعة.');
+            alert('✅ شكراً لتواصلك! سنرد خلال 24 ساعة.');
             this.reset();
         });
         
-        // تحميل البيانات عند فتح الصفحة
         fetchAirQuality();
-        
-        // تحديث تلقائي كل ساعة (3600000 ملي ثانية)
-        // Open-Meteo تحديث البيانات كل ساعة [citation:9]
         setInterval(fetchAirQuality, 3600000);
-        
-        console.log('🌿 EcoData Saudi - Open-Meteo API | مجاني 100% | تحديث تلقائي ✅');
     </script>
 </body>
 </html>
