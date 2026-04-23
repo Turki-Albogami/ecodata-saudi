@@ -317,15 +317,30 @@
             
             for (const city of cities) {
                 try {
-                    const response = await fetch(`https://api.waqi.info/feed/${city.apiName}/?token=${API_TOKEN}`);
+                    // استخدام الرابط مع v2 للحصول على بيانات أدق
+                    const response = await fetch(`https://api.waqi.info/v2/feed/${city.apiName}/?token=${API_TOKEN}`);
                     
                     if (response.ok) {
                         const data = await response.json();
                         
                         if (data.status === 'ok') {
-                            const aqi = data.data.aqi;
-                            const pm25 = data.data.iaqi.pm25 ? data.data.iaqi.pm25.v : null;
-                            const pm10 = data.data.iaqi.pm10 ? data.data.iaqi.pm10.v : null;
+                            // التأكد من أننا نأخذ AQI الصحيح من المصدر الرئيسي
+                            let aqi = data.data.aqi;
+                            
+                            // إذا كان AQI أقل من 50 وأكبر من 0، نتأكد أنه صحيح
+                            // بعض الأحيان API يعطي قيم PM2.5 مكان AQI لهذا نتحقق
+                            const pm25 = data.data.iaqi?.pm25?.v || null;
+                            const pm10 = data.data.iaqi?.pm10?.v || null;
+                            
+                            // إذا كان AQI منخفض جداً (أقل من 10)可能存在 خطأ، نستخدم تقدير من PM2.5
+                            if (aqi < 10 && pm25) {
+                                // تحويل تقريبي من PM2.5 إلى AQI
+                                if (pm25 <= 12) aqi = Math.round(pm25 * (50/12));
+                                else if (pm25 <= 35.4) aqi = Math.round(50 + (pm25 - 12) * (50/23.4));
+                                else if (pm25 <= 55.4) aqi = Math.round(100 + (pm25 - 35.4) * (50/20));
+                                else aqi = Math.round(150 + (pm25 - 55.4) * (50/95));
+                            }
+                            
                             const status = getAirQualityStatus(aqi);
                             
                             results.push({
@@ -360,6 +375,9 @@
                         error: true
                     });
                 }
+                
+                // تأخير بسيط بين الطلبات عشان ما نضغط على API
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
             
             displayResults(results);
@@ -371,15 +389,15 @@
             const tableContainer = document.getElementById('airQualityTable');
             
             let tableHTML = `
-                <table>
+                <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th>المدينة</th>
-                            <th>AQI</th>
-                            <th>PM2.5</th>
-                            <th>PM10</th>
-                            <th>الحالة</th>
-                            <th>آخر تحديث</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">المدينة</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">AQI</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">PM2.5</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">PM10</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">الحالة</th>
+                            <th style="padding: 12px; background: #1e6f3f; color: white;">آخر تحديث</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -389,14 +407,24 @@
                 const pm25Display = city.pm25 ? `${city.pm25} µg/m³` : '—';
                 const pm10Display = city.pm10 ? `${city.pm10} µg/m³` : '—';
                 
+                // تحديد لون خلفية AQI حسب القيمة
+                let aqiColor = '#333';
+                if (city.aqi !== '—') {
+                    if (city.aqi <= 50) aqiColor = '#2ecc71';
+                    else if (city.aqi <= 100) aqiColor = '#f39c12';
+                    else if (city.aqi <= 150) aqiColor = '#e67e22';
+                    else if (city.aqi <= 200) aqiColor = '#e74c3c';
+                    else aqiColor = '#8e44ad';
+                }
+                
                 tableHTML += `
-                    <tr>
-                        <td><strong>${city.name}</strong></td>
-                        <td><span class="aqi-value">${city.aqi}</span></td>
-                        <td>${pm25Display}</td>
-                        <td>${pm10Display}</td>
-                        <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
-                        <td>${city.error ? '—' : city.time}</td>
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;"><strong>${city.name}</strong></td>
+                        <td style="padding: 12px;"><span style="font-size: 24px; font-weight: bold; color: ${aqiColor};">${city.aqi}</span></td>
+                        <td style="padding: 12px;">${pm25Display}</td>
+                        <td style="padding: 12px;">${pm10Display}</td>
+                        <td style="padding: 12px;"><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
+                        <td style="padding: 12px;">${city.error ? '—' : city.time}</td>
                     </tr>
                 `;
             }
