@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoData Saudi | المرجع البيئي الشامل - المسابقة</title>
+    <title>EcoData Saudi | المرجع البيئي الشامل</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -18,13 +18,8 @@
         header h1 span { font-size: 0.6em; background: #ffd700; color: #0d5c2e; padding: 4px 12px; border-radius: 20px; margin-right: 10px; }
         .last-update { font-size: 14px; margin-top: 10px; opacity: 0.9; }
         
-        /* Navigation */
-        nav { background: #1e293b; padding: 15px 0; position: sticky; top: 0; z-index: 1000; overflow-x: auto; white-space: nowrap; }
-        nav a { color: white; text-decoration: none; padding: 10px 20px; margin: 0 5px; border-radius: 5px; display: inline-block; }
-        nav a:hover { background: #0d5c2e; }
-        
         /* Search Bar */
-        .search-container { background: white; padding: 15px; border-radius: 50px; margin: -25px auto 20px auto; max-width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .search-container { background: white; padding: 15px; border-radius: 50px; margin: -25px auto 20px auto; max-width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; }
         .search-container input { flex:1; padding: 12px 20px; border: 1px solid #e2e8f0; border-radius: 50px; font-size: 16px; }
         .search-container button { background:#0d5c2e; color:white; border:none; padding:12px 24px; border-radius:50px; cursor:pointer; }
         
@@ -58,8 +53,8 @@
         .status-hazardous { background: #8b5cf6; color: white; }
         
         /* Tabs */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { background: #e2e8f0; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { background: #e2e8f0; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
         .tab-btn.active { background: #0d5c2e; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
@@ -100,24 +95,12 @@
 
     <!-- شريط البحث -->
     <div class="container">
-        <div class="search-container" style="display: flex; gap: 10px;">
+        <div class="search-container">
             <input type="text" id="searchInput" placeholder="🔍 ابحث عن مدينة... الرياض، جدة، أبها...">
             <button onclick="searchCity()">بحث</button>
         </div>
         <div id="searchResults" style="display: none; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 10px; padding: 15px;"></div>
     </div>
-
-    <nav>
-        <div class="container">
-            <a href="#home">الرئيسية</a>
-            <a href="#air">جودة الهواء</a>
-            <a href="#waste">النفايات</a>
-            <a href="#water">المياه</a>
-            <a href="#energy">الطاقة</a>
-            <a href="#investors">للمستثمرين</a>
-            <a href="#dashboard">لوحة تحكمي</a>
-        </div>
-    </nav>
 
     <main class="container">
         <!-- نظرة عامة -->
@@ -140,7 +123,7 @@
             <button class="tab-btn" onclick="showTab('waste-tab')">🗑️ النفايات</button>
             <button class="tab-btn" onclick="showTab('water-tab')">💧 المياه</button>
             <button class="tab-btn" onclick="showTab('energy-tab')">☀️ الطاقة</button>
-            <button class="tab-btn" onclick="showTab('investors-tab')">💼 المستثمرين</button>
+            <button class="tab-btn" onclick="showTab('investors-tab')">💼 للمستثمرين</button>
             <button class="tab-btn" onclick="showTab('dashboard-tab')">📊 لوحة تحكمي</button>
         </div>
 
@@ -376,7 +359,7 @@
         }
         
         function displayAirTable() {
-            let html = `<tr><thead><tr><th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th><th>⭐ مفضلة</th></tr></thead><tbody>`;
+            let html = `<table><thead><tr><th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th><th>⭐ مفضلة</th></tr></thead><tbody>`;
             for (const city of currentAirData) {
                 let color = city.aqi <= 50 ? '#22c55e' : city.aqi <= 100 ? '#eab308' : '#ef4444';
                 let isChecked = favoriteCities.includes(city.name) ? 'checked' : '';
@@ -536,88 +519,4 @@
         // ==================== البيانات الإضافية ====================
         function displayWasteTable() {
             let html = `<table><thead><tr><th>المدينة</th><th>إجمالي النفايات (طن/يوم)</th><th>عضوي (%)</th><th>بلاستيك (%)</th><th>نسبة التدوير (%)</th></tr></thead><tbody>`;
-            for (const w of wasteData) html += `<tr><td>${w.city}</td><td>${w.totalWaste.toLocaleString()}</td><td>${w.organic}%</td><td>${w.plastic}%</td><td>${w.recyclingRate}%</td></tr>`;
-            document.getElementById('wasteTable').innerHTML = html + `</tbody></table>`;
-            new Chart(document.getElementById('wasteChart'), { type: 'doughnut', data: { labels: ['عضوي', 'بلاستيك', 'ورق', 'زجاج', 'معادن'], datasets: [{ data: [45, 19, 11, 5, 4], backgroundColor: ['#22c55e', '#3b82f6', '#f97316', '#8b5cf6', '#ef4444'] }] } });
-        }
-        
-        function displayWaterTable() {
-            const total = waterData.desalination + waterData.groundwater + waterData.treatedWastewater + waterData.surfaceWater;
-            let html = `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>`;
-            const names = { desalination: 'تحلية المياه', groundwater: 'المياه الجوفية', treatedWastewater: 'مياه معالجة', surfaceWater: 'المياه السطحية' };
-            for (const [key, val] of Object.entries(waterData)) html += `<tr><td>${names[key]}</td><td>${val.toLocaleString()}</td><td>${Math.round(val/total*100)}%</td></tr>`;
-            document.getElementById('waterTable').innerHTML = html + `</tbody></table>`;
-            new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
-        }
-        
-        function displayEnergyTable() {
-            const total = energyData.solar + energyData.wind + energyData.greenHydrogen + energyData.fossil;
-            let html = `<tr><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>الطاقة الشمسية</td><td>${energyData.solar}</td><td>${Math.round(energyData.solar/total*100)}%</td></tr>
-                <tr><td>طاقة الرياح</td><td>${energyData.wind}</td><td>${Math.round(energyData.wind/total*100)}%</td></tr>
-                <tr><td>الهيدروجين الأخضر</td><td>${energyData.greenHydrogen}</td><td>${Math.round(energyData.greenHydrogen/total*100)}%</td></tr>
-                <tr><td>الوقود الأحفوري</td><td>${energyData.fossil}</td><td>${Math.round(energyData.fossil/total*100)}%</td></tr>`;
-            document.getElementById('energyTable').innerHTML = html + `</tbody></table>`;
-            new Chart(document.getElementById('energyMixChart'), { type: 'bar', data: { labels: ['شمسية', 'رياح', 'هيدروجين', 'أحفوري'], datasets: [{ label: 'جيجاواط', data: [28, 16, 15, 120], backgroundColor: '#eab308', borderRadius: 8 }] } });
-        }
-        
-        function downloadFullReport() {
-            let report = "EcoData Saudi - التقرير البيئي الشامل\n" + "=".repeat(50) + "\n";
-            report += `التاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n`;
-            report += "1. جودة الهواء:\n" + currentAirData.map(c => `   - ${c.name}: AQI ${c.aqi}`).join('\n');
-            report += `\n\n2. النفايات:\n   - إجمالي يومي: ${wasteData.reduce((s,w)=>s+w.totalWaste,0).toLocaleString()} طن\n   - متوسط التدوير: 13%`;
-            report += `\n\n3. المياه:\n   - تحلية: 2100 مليون م³\n   - مياه معالجة: 800 مليون م³`;
-            report += `\n\n4. الطاقة المتجددة:\n   - هدف 2030: 50% من الكهرباء\n   - مشاريع: سدير، دومة الجندل، نيوم`;
-            report += "\n\n" + "=".repeat(50) + "\nللاستفسارات: ecodata@saudi.com";
-            
-            const blob = new Blob([report], {type: 'text/plain'});
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `EcoData_Report_${new Date().toISOString().slice(0,10)}.txt`;
-            link.click();
-            alert('✅ تم تحميل التقرير');
-        }
-        
-        function shareReport() {
-            const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `🌿 EcoData Saudi\n📊 مراقبة ${currentAirData.length} مدينة\n🏆 أنقى مدينة: ${best?.name} (AQI ${best?.aqi})\n🎯 هدف 2030: 50% طاقة متجددة`;
-            if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
-            else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
-        }
-        
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-        }
-        
-        // ==================== النماذج ====================
-        document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('subName').value;
-            alert(`✅ شكراً ${name}! تم تسجيل بريدك في النشرة الأسبوعية.`);
-            this.reset();
-        });
-        
-        document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('✅ شكراً لتواصلك! سنرد خلال 24 ساعة');
-            this.reset();
-        });
-        
-        // ==================== التشغيل ====================
-        async function fetchAllData() {
-            showLoading();
-            await fetchAirQuality();
-            displayWasteTable();
-            displayWaterTable();
-            displayEnergyTable();
-            hideLoading();
-        }
-        
-        fetchAllData();
-        setInterval(fetchAllData, 3600000);
-    </script>
-</body>
-</html>
+            for (const w of wasteData) html += `<tr><td>${w.city}</td><td>${w.totalWaste.toLocaleString()}</td><td>${w.organic}%${w.pm25 || '—'} µg/m³`, wi`);
