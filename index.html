@@ -399,8 +399,23 @@
             updateRecommendations();
         }
 
+        // دالة عرض جدول جودة الهواء بشكل مرتب (تم إصلاحها)
         function displayAirTable() {
-            let html = `<div class="table-wrapper">` + `<tr><thead>运转<th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المدينة</th>
+                                <th>AQI</th>
+                                <th>PM2.5</th>
+                                <th>PM10</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
             for (const city of currentAirData) {
                 let color = '#333';
                 if (city.aqi <= 50) color = '#22c55e';
@@ -408,9 +423,28 @@
                 else if (city.aqi <= 150) color = '#f97316';
                 else if (city.aqi <= 200) color = '#ef4444';
                 else color = '#8b5cf6';
-                html += `<tr><td><strong>${city.name}</strong></td><td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td><td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td><td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td><td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td></tr>`;
+                
+                let pm25Text = (city.pm25 !== null && city.pm25 !== undefined) ? city.pm25 + ' µg/m³' : '—';
+                let pm10Text = (city.pm10 !== null && city.pm10 !== undefined) ? city.pm10 + ' µg/m³' : '—';
+                
+                html += `
+                    <tr>
+                        <td><strong>${city.name}</strong></td>
+                        <td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td>
+                        <td>${pm25Text}</td>
+                        <td>${pm10Text}</td>
+                        <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
+                    </tr>
+                `;
             }
-            document.getElementById('airQualityTable').innerHTML = html + `</tbody></table></div>`;
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('airQualityTable').innerHTML = html;
         }
 
         function updateAirMap() {
@@ -457,7 +491,7 @@
             for (let city in byCity) summary += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
             summary += '</ul>';
             document.getElementById('stationsSummary').innerHTML = summary;
-            let html = `<div class="table-wrapper">` + `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
             stations.forEach(s => {
                 let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
                 html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
@@ -488,7 +522,7 @@
 
         // المياه
         function displayWaterTable() {
-            let html = `<div class="table-wrapper">` + `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
+            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
                 <tr><td>تحلية المياه</td><td>2,100</td><td>48%</td></tr>
                 <tr><td>المياه الجوفية</td><td>1,200</td><td>27%</td></tr>
                 <tr><td>مياه معالجة</td><td>800</td><td>18%</td></tr>
@@ -515,7 +549,7 @@
             top3.forEach(p => { topHtml += `<li><strong>${p.name}</strong> - ${p.capacity} GW (${p.type})</li>`; });
             topHtml += '</ol>';
             document.getElementById('topProjects').innerHTML = topHtml;
-            let tableHtml = `<div class="table-wrapper">` + `<table><thead><tr><th>#</th><th>المشروع</th><th>النوع</th><th>السعة (GW)</th><th>السنة</th><th>الحالة</th><th>المطور</th></tr></thead><tbody>`;
+            let tableHtml = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>المشروع</th><th>النوع</th><th>السعة (GW)</th><th>السنة</th><th>الحالة</th><th>المطور</th></tr></thead><tbody>`;
             energyProjects.forEach(p => {
                 let statusClass = p.status === 'Installed' ? '🟢' : (p.status === 'PPA Signed' ? '🟡' : '🔵');
                 tableHtml += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td><td>${p.capacity}</td><td>${p.year}</td><td>${statusClass} ${p.status}</td><td>${p.developer}</td></tr>`;
