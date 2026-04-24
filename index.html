@@ -31,12 +31,14 @@
         .card-red { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
         .card-blue { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #e2e8f0; }
-        th { background: #0d5c2e; color: white; }
+        /* ========== تحسين شكل الجدول ========== */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 14px 12px; text-align: center; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+        th { background: #0d5c2e; color: white; font-weight: bold; font-size: 16px; }
+        tr { transition: background 0.2s; }
         tr:hover { background: #f8fafc; }
         
-        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 30px; font-size: 13px; font-weight: bold; }
+        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: bold; }
         .status-good { background: #22c55e; color: white; }
         .status-moderate { background: #eab308; color: white; }
         .status-unhealthy { background: #f97316; color: white; }
@@ -61,9 +63,12 @@
         form button { background: #0d5c2e; color: white; padding: 12px 30px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
         
         footer { background: #1e293b; color: #94a3b8; text-align: center; padding: 30px 0; margin-top: 40px; }
-        .data-source { font-size: 11px; color: #64748b; text-align: center; margin-top: 20px; }
         
-        @media (max-width: 768px) { .two-columns, .three-columns { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 768px) { 
+            .two-columns, .three-columns { grid-template-columns: 1fr; } 
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            th, td { padding: 10px 8px; font-size: 12px; }
+        }
         
         @keyframes spin { to { transform: rotate(360deg); } }
         .spinner { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2); z-index:9999; text-align:center; }
@@ -106,7 +111,7 @@
             <button class="tab-btn" onclick="showTab('investors-tab')">💼 للمستثمرين</button>
         </div>
 
-        <!-- ==================== جودة الهواء ==================== -->
+        <!-- تبويب جودة الهواء -->
         <div id="air-tab" class="tab-content active">
             <section>
                 <h2>📈 مؤشرات جودة الهواء لحظياً</h2>
@@ -118,10 +123,10 @@
             </section>
         </div>
 
-        <!-- ==================== محطات النفايات ==================== -->
+        <!-- تبويب محطات النفايات -->
         <div id="stations-tab" class="tab-content">
             <section>
-                <h2>🗺️ محطات نقل النفايات (27 محطة)</h2>
+                <h2>🚛 محطات نقل النفايات (27 محطة)</h2>
                 <div class="two-columns">
                     <div>
                         <p><strong>📍 عدد المحطات:</strong> 27</p>
@@ -133,12 +138,12 @@
                         <button onclick="exportStationsData()" class="btn" style="background:#eab308;">📥 تحميل البيانات</button>
                     </div>
                 </div>
-                <div id="stationsMap" class="map-container" style="height: 500px; display: none;"></div>
+                <div id="stationsMap" class="map-container" style="display: none;"></div>
                 <div id="stationsTable" style="margin-top: 20px; overflow-x: auto;"></div>
             </section>
         </div>
 
-        <!-- ==================== المياه ==================== -->
+        <!-- تبويب المياه -->
         <div id="water-tab" class="tab-content">
             <section>
                 <h2>💧 الموارد المائية وإعادة الاستخدام</h2>
@@ -150,7 +155,7 @@
             </section>
         </div>
 
-        <!-- ==================== الطاقة ==================== -->
+        <!-- تبويب الطاقة -->
         <div id="energy-tab" class="tab-content">
             <section>
                 <h2>☀️ الطاقة المتجددة في السعودية</h2>
@@ -162,7 +167,7 @@
             </section>
         </div>
 
-        <!-- ==================== الزراعة ==================== -->
+        <!-- تبويب الزراعة -->
         <div id="agriculture-tab" class="tab-content">
             <section>
                 <h2>🌾 الدليل الزراعي السعودي</h2>
@@ -170,7 +175,7 @@
                     <h3 style="color: white;">📊 نظرة عامة على القطاع الزراعي</h3>
                     <p>السعودية تمتلك 1.7 مليون هكتار من الأراضي الزراعية، وتنتج سنوياً أكثر من 10 ملايين طن من المنتجات الزراعية.</p>
                 </div>
-                <div class="three-columns" id="agricultureStats">
+                <div class="three-columns">
                     <div class="stat-card"><h3>1.7M</h3><p>هكتار أراضٍ زراعية</p></div>
                     <div class="stat-card"><h3>10M+</h3><p>طن إنتاج سنوي</p></div>
                     <div class="stat-card"><h3>50%</h3><p>اكتفاء ذاتي من الدواجن</p></div>
@@ -179,40 +184,20 @@
             
             <section>
                 <h2>📋 المنصات والخدمات الزراعية الحكومية</h2>
-                
-                <div class="investor-card" style="margin-bottom: 20px;">
+                <div class="investor-card">
                     <h3>📡 منصة الحصر الزراعي (HSR)</h3>
-                    <p>بيانات حية للمناطق الزراعية باستخدام الطائرات بدون طيار:</p>
-                    <ul>
-                        <li>✅ مسح زراعي شامل</li>
-                        <li>✅ إحصاءات الثروة الحيوانية</li>
-                        <li>✅ بيانات المناحل والآبار</li>
-                    </ul>
-                    <div style="margin-top: 15px;">
-                        <a href="https://hsr.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
-                    </div>
+                    <p>بيانات حية للمناطق الزراعية باستخدام الطائرات بدون طيار</p>
+                    <a href="https://hsr.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
                 </div>
-
-                <div class="investor-card" style="margin-bottom: 20px;">
+                <div class="investor-card">
                     <h3>🌾 نظام حصاد المطور (Hassad)</h3>
-                    <p>خدمات رقمية للمستثمرين الزراعيين:</p>
-                    <ul>
-                        <li>✅ تسجيل المواقع الزراعية</li>
-                        <li>✅ استيراد الأسمدة والبذور والشتلات</li>
-                        <li>✅ تصاريح المبيدات الزراعية</li>
-                    </ul>
-                    <div style="margin-top: 15px;">
-                        <a href="https://hassad.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
-                    </div>
+                    <p>خدمات رقمية للمستثمرين الزراعيين</p>
+                    <a href="https://hassad.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
                 </div>
-
                 <div class="investor-card">
                     <h3>📊 المسح الزراعي الشامل 2024 (GASTAT)</h3>
-                    <p><strong>الجهة:</strong> الهيئة العامة للإحصاء | <strong>التغطية:</strong> جميع المناطق والمحافظات</p>
-                    <p>يشمل: القطاع النباتي والحيواني - المساحات المزروعة - كميات الإنتاج - أعداد الثروة الحيوانية.</p>
-                    <div style="margin-top: 15px;">
-                        <a href="https://www.stats.gov.sa" target="_blank" class="btn" style="background:#eab308;">🔗 عرض التقارير</a>
-                    </div>
+                    <p>الجهة: الهيئة العامة للإحصاء | التغطية: جميع المناطق والمحافظات</p>
+                    <a href="https://www.stats.gov.sa" target="_blank" class="btn" style="background:#eab308;">🔗 عرض التقارير</a>
                 </div>
             </section>
             
@@ -224,33 +209,21 @@
             <section>
                 <h2>💼 فرص استثمارية في القطاع الزراعي</h2>
                 <div class="two-columns">
-                    <div class="investor-card">
-                        <h3>🌿 الزراعة العضوية</h3>
-                        <p>الطلب العالمي على المنتجات العضوية في ارتفاع. السعودية تمتلك مقومات لإنتاج محاصيل عضوية عالية الجودة.</p>
-                    </div>
-                    <div class="investor-card">
-                        <h3>💧 الري الحديث</h3>
-                        <p>تقنيات الري بالتنقيط والري الذكي توفر 50% من المياه. فرصة للمستثمرين في مجال حلول الري.</p>
-                    </div>
-                    <div class="investor-card">
-                        <h3>♻️ تدوير المخلفات الزراعية</h3>
-                        <p>تحويل المخلفات الزراعية إلى أسمدة عضوية وطاقة حيوية. سوق واعد ومدعوم حكومياً.</p>
-                    </div>
-                    <div class="investor-card">
-                        <h3>🌱 البيوت المحمية</h3>
-                        <p>استثمار في البيوت المحمية لتوفير المنتجات الزراعية على مدار العام.</p>
-                    </div>
+                    <div class="investor-card"><h3>🌿 الزراعة العضوية</h3><p>الطلب العالمي على المنتجات العضوية في ارتفاع</p></div>
+                    <div class="investor-card"><h3>💧 الري الحديث</h3><p>تقنيات الري توفر 50% من المياه</p></div>
+                    <div class="investor-card"><h3>♻️ تدوير المخلفات الزراعية</h3><p>تحويل المخلفات إلى أسمدة عضوية</p></div>
+                    <div class="investor-card"><h3>🌱 البيوت المحمية</h3><p>إنتاج على مدار العام</p></div>
                 </div>
             </section>
         </div>
 
-        <!-- ==================== للمستثمرين ==================== -->
+        <!-- تبويب المستثمرين -->
         <div id="investors-tab" class="tab-content">
             <section>
                 <h2>📊 تقارير وتحليلات استثمارية</h2>
                 <div class="two-columns">
                     <div>
-                        <h3>ترتيب المدن حسب جودة الهواء</h3>
+                        <h3>ترتيب المدن حسب النقاء</h3>
                         <canvas id="rankingChart"></canvas>
                     </div>
                     <div>
@@ -260,7 +233,7 @@
                 </div>
                 <div style="text-align:center; margin-top:20px">
                     <button class="btn" onclick="downloadFullReport()">📥 تحميل التقرير الشامل</button>
-                    <button class="btn" onclick="shareReport()" style="background:#eab308; margin-right:10px;">📤 مشاركة التقرير</button>
+                    <button class="btn" onclick="shareReport()" style="background:#eab308;">📤 مشاركة التقرير</button>
                 </div>
             </section>
         </div>
@@ -269,8 +242,8 @@
         <section style="background: linear-gradient(135deg, #f0fdf4, #dcfce7);">
             <h2>📧 النشرة الاستثمارية الأسبوعية</h2>
             <div class="two-columns">
-                <div><p><strong>📊 احصل على تقرير أسبوعي مجاني</strong></p><ul><li>✅ أحدث الفرص الاستثمارية</li><li>✅ تحديثات القطاع الزراعي</li><li>✅ تحليلات حصرية</li></ul></div>
-                <div><form id="newsletterForm"><input type="text" id="subName" placeholder="الاسم الكامل" required><input type="email" id="subEmail" placeholder="البريد الإلكتروني" required><select id="subInterest"><option>نوع الاستثمار المهتم به</option><option>زراعي</option><option>تدوير نفايات</option><option>طاقة متجددة</option><option>تحلية مياه</option></select><button type="submit">اشترك مجاناً</button></form></div>
+                <div><p><strong>📊 احصل على تقرير أسبوعي مجاني</strong></p></div>
+                <div><form id="newsletterForm"><input type="text" id="subName" placeholder="الاسم الكامل" required><input type="email" id="subEmail" placeholder="البريد الإلكتروني" required><button type="submit">اشترك مجاناً</button></form></div>
             </div>
         </section>
     </main>
@@ -278,7 +251,7 @@
     <footer>
         <div class="container">
             <p>© 2025 EcoData Saudi - المنصة البيئية والزراعية المتكاملة</p>
-            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات | الزراعة: وزارة البيئة والمياه والزراعة</p>
+            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات</p>
         </div>
     </footer>
 
@@ -290,40 +263,34 @@
         
         // بيانات محطات نقل النفايات
         const stations = [
-            { id: "TS1", name: "Al Janadriyyah Transfer station", city: "Riyadh", lat: 21.62699, lon: 46.08904, status: "Unconfirmed" },
-            { id: "TS2", name: "Al Shmal & Maathar Transfer station", city: "Riyadh", lat: 25.15213, lon: 46.83394, status: "Unconfirmed" },
-            { id: "TS3", name: "Al Uraija Transfer station", city: "Riyadh", lat: 24.85331, lon: 46.57790, status: "Unconfirmed" },
-            { id: "TS4", name: "Shifa Transfer station", city: "Riyadh", lat: 24.87694, lon: 46.57308, status: "Unconfirmed" },
-            { id: "TS5", name: "Breman Transfer station", city: "Jeddah", lat: 21.47637, lon: 39.29760, status: "Unconfirmed" },
-            { id: "TS6", name: "Dammam East Transfer station", city: "Dammam", lat: 21.47778, lon: 50.13859, status: "Unconfirmed" },
-            { id: "TS7", name: "Dammam North Transfer station", city: "Dammam", lat: 26.41305, lon: 50.04538, status: "Unconfirmed" },
-            { id: "TS8", name: "Dammam West Transfer station", city: "Dammam", lat: 26.44898, lon: 50.00007, status: "Unconfirmed" },
-            { id: "TS9", name: "Dammam South Transfer station", city: "Dammam", lat: 26.39683, lon: 50.10242, status: "Unconfirmed" },
-            { id: "TS10", name: "Qatif Transfer station", city: "Dammam", lat: 26.23264, lon: 49.92467, status: "Unconfirmed" },
-            { id: "TS11", name: "Dhahban/Asfan Transfer station", city: "Riyadh", lat: 26.53540, lon: 46.72513, status: "Unconfirmed" },
-            { id: "TS12", name: "Airport 2 Transfer station", city: "Jeddah", lat: 21.84216, lon: 39.20079, status: "Unconfirmed" },
-            { id: "TS13", name: "Airport 1 Transfer station", city: "Jeddah", lat: 21.60812, lon: 39.15333, status: "Unconfirmed" },
-            { id: "TS14", name: "Alnakheel Transfer station", city: "Jeddah", lat: 21.62699, lon: 39.19740, status: "Unconfirmed" },
-            { id: "TS15", name: "Kuzam Transfer station", city: "Jeddah", lat: 21.63178, lon: 39.20323, status: "Unconfirmed" },
-            { id: "TS16", name: "Salam Transfer station", city: "Jeddah", lat: 21.52978, lon: 39.25409, status: "Unconfirmed" },
-            { id: "TS17", name: "Aljawharah Transfer station", city: "Jeddah", lat: 21.44634, lon: 39.19254, status: "Unconfirmed" },
-            { id: "TS18", name: "Bahra Transfer station", city: "Jeddah", lat: 21.43531, lon: 39.25499, status: "Closed" },
-            { id: "TS19", name: "Al Jumum Transfer station", city: "Jeddah", lat: 21.59884, lon: 39.24617, status: "Seasonal" },
-            { id: "TS20", name: "Huraymila Transfer station", city: "Makkah", lat: 21.44209, lon: 39.80745, status: "Unconfirmed" },
-            { id: "TS21", name: "Salama Transfer station", city: "Makkah", lat: 26.44332, lon: 39.88847, status: "Unconfirmed" },
-            { id: "TS22", name: "Al Kakiyyah Transfer Station", city: "Makkah", lat: 21.59884, lon: 39.56566, status: "Seasonal" },
-            { id: "TS23", name: "Alaziziyyah Transfer Station", city: "Makkah", lat: 21.36728, lon: 39.68627, status: "Seasonal" },
-            { id: "TS24", name: "Muzdalifah Transfer Station", city: "Makkah", lat: 21.38547, lon: 39.93731, status: "Seasonal" },
-            { id: "TS25", name: "Arafat Transfer Station", city: "Makkah", lat: 21.46143, lon: 39.98983, status: "Seasonal" },
-            { id: "TS26", name: "Al-Ma'isam Transfer Station", city: "Makkah", lat: 21.59703, lon: 39.90480, status: "Seasonal" },
-            { id: "TS27", name: "TS Buraydah", city: "Al Qassim", lat: 21.35508, lon: 43.97081, status: "Unconfirmed" }
+            { id: "TS1", name: "Al Janadriyyah", city: "Riyadh", lat: 21.62699, lon: 46.08904, status: "Unconfirmed" },
+            { id: "TS2", name: "Al Shmal & Maathar", city: "Riyadh", lat: 25.15213, lon: 46.83394, status: "Unconfirmed" },
+            { id: "TS3", name: "Al Uraija", city: "Riyadh", lat: 24.85331, lon: 46.57790, status: "Unconfirmed" },
+            { id: "TS4", name: "Shifa", city: "Riyadh", lat: 24.87694, lon: 46.57308, status: "Unconfirmed" },
+            { id: "TS5", name: "Breman", city: "Jeddah", lat: 21.47637, lon: 39.29760, status: "Unconfirmed" },
+            { id: "TS6", name: "Dammam East", city: "Dammam", lat: 21.47778, lon: 50.13859, status: "Unconfirmed" },
+            { id: "TS7", name: "Dammam North", city: "Dammam", lat: 26.41305, lon: 50.04538, status: "Unconfirmed" },
+            { id: "TS8", name: "Dammam West", city: "Dammam", lat: 26.44898, lon: 50.00007, status: "Unconfirmed" },
+            { id: "TS9", name: "Dammam South", city: "Dammam", lat: 26.39683, lon: 50.10242, status: "Unconfirmed" },
+            { id: "TS10", name: "Qatif", city: "Dammam", lat: 26.23264, lon: 49.92467, status: "Unconfirmed" },
+            { id: "TS11", name: "Dhahban/Asfan", city: "Riyadh", lat: 26.53540, lon: 46.72513, status: "Unconfirmed" },
+            { id: "TS12", name: "Airport 2", city: "Jeddah", lat: 21.84216, lon: 39.20079, status: "Unconfirmed" },
+            { id: "TS13", name: "Airport 1", city: "Jeddah", lat: 21.60812, lon: 39.15333, status: "Unconfirmed" },
+            { id: "TS14", name: "Alnakheel", city: "Jeddah", lat: 21.62699, lon: 39.19740, status: "Unconfirmed" },
+            { id: "TS15", name: "Kuzam", city: "Jeddah", lat: 21.63178, lon: 39.20323, status: "Unconfirmed" },
+            { id: "TS16", name: "Salam", city: "Jeddah", lat: 21.52978, lon: 39.25409, status: "Unconfirmed" },
+            { id: "TS17", name: "Aljawharah", city: "Jeddah", lat: 21.44634, lon: 39.19254, status: "Unconfirmed" },
+            { id: "TS18", name: "Bahra", city: "Jeddah", lat: 21.43531, lon: 39.25499, status: "Closed" },
+            { id: "TS19", name: "Al Jumum", city: "Jeddah", lat: 21.59884, lon: 39.24617, status: "Seasonal" },
+            { id: "TS20", name: "Huraymila", city: "Makkah", lat: 21.44209, lon: 39.80745, status: "Unconfirmed" },
+            { id: "TS21", name: "Salama", city: "Makkah", lat: 26.44332, lon: 39.88847, status: "Unconfirmed" },
+            { id: "TS22", name: "Al Kakiyyah", city: "Makkah", lat: 21.59884, lon: 39.56566, status: "Seasonal" },
+            { id: "TS23", name: "Alaziziyyah", city: "Makkah", lat: 21.36728, lon: 39.68627, status: "Seasonal" },
+            { id: "TS24", name: "Muzdalifah", city: "Makkah", lat: 21.38547, lon: 39.93731, status: "Seasonal" },
+            { id: "TS25", name: "Arafat", city: "Makkah", lat: 21.46143, lon: 39.98983, status: "Seasonal" },
+            { id: "TS26", name: "Al-Ma'isam", city: "Makkah", lat: 21.59703, lon: 39.90480, status: "Seasonal" },
+            { id: "TS27", name: "Buraydah", city: "Al Qassim", lat: 21.35508, lon: 43.97081, status: "Unconfirmed" }
         ];
-        
-        // بيانات المياه
-        const waterData = { desalination: 2100, groundwater: 1200, treatedWastewater: 800, surfaceWater: 300 };
-        
-        // بيانات الطاقة
-        const energyData = { solar: 28, wind: 16, greenHydrogen: 15, fossil: 120 };
         
         // المدن
         const cities = [
@@ -337,14 +304,15 @@
             { name: 'حائل', lat: 27.5214, lon: 41.6907 }
         ];
         
-        // ==================== جودة الهواء ====================
+        // حساب AQI من PM2.5 حسب معايير EPA
         function calculateAQI(pm25) {
-            if (!pm25 || isNaN(pm25)) return 50;
-            if (pm25 <= 12) return Math.round((50/12) * pm25);
-            if (pm25 <= 35.4) return Math.round(50 + (pm25-12) * (50/23.4));
-            if (pm25 <= 55.4) return Math.round(100 + (pm25-35.4) * (50/20));
-            if (pm25 <= 150.4) return Math.round(150 + (pm25-55.4) * (50/95));
-            return Math.round(200 + (pm25-150.4) * (50/100));
+            if (!pm25 || isNaN(pm25) || pm25 < 0) return 50;
+            if (pm25 <= 12.0) return Math.round((50 / 12) * pm25);
+            if (pm25 <= 35.4) return Math.round(50 + (pm25 - 12) * (50 / 23.4));
+            if (pm25 <= 55.4) return Math.round(100 + (pm25 - 35.4) * (50 / 20));
+            if (pm25 <= 150.4) return Math.round(150 + (pm25 - 55.4) * (50 / 95));
+            if (pm25 <= 250.4) return Math.round(200 + (pm25 - 150.4) * (50 / 100));
+            return Math.round(300 + (pm25 - 250.4) * (50 / 100));
         }
         
         function getStatus(aqi) {
@@ -352,9 +320,10 @@
             if (aqi <= 100) return { text: 'متوسط', class: 'status-moderate', icon: '🟡' };
             if (aqi <= 150) return { text: 'غير صحي للحساسين', class: 'status-unhealthy', icon: '🟠' };
             if (aqi <= 200) return { text: 'غير صحي', class: 'status-very-unhealthy', icon: '🔴' };
-            return { text: 'خطير', class: 'status-hazardous', icon: '🟣' };
+            return { text: 'خطير جداً', class: 'status-hazardous', icon: '🟣' };
         }
         
+        // جلب بيانات جودة الهواء
         async function fetchAirQuality() {
             let results = [];
             for (const city of cities) {
@@ -363,7 +332,7 @@
                     const resp = await fetch(url);
                     if (resp.ok) {
                         const data = await resp.json();
-                        if (data.current) {
+                        if (data.current && data.current.pm2_5 !== undefined) {
                             const pm25 = data.current.pm2_5;
                             const aqi = calculateAQI(pm25);
                             results.push({
@@ -375,8 +344,8 @@
                             });
                         }
                     }
-                } catch(e) { console.log(e); }
-                await new Promise(r => setTimeout(r, 200));
+                } catch(e) { console.log('خطأ:', city.name, e); }
+                await new Promise(r => setTimeout(r, 300));
             }
             currentAirData = results;
             displayAirTable();
@@ -387,14 +356,20 @@
         }
         
         function displayAirTable() {
-            let html = `<td><thead><tr><th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `�<thead>运转<th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></thead><tbody>`;
             for (const city of currentAirData) {
-                let color = city.aqi <= 50 ? '#22c55e' : city.aqi <= 100 ? '#eab308' : '#ef4444';
+                let color = '#333';
+                if (city.aqi <= 50) color = '#22c55e';
+                else if (city.aqi <= 100) color = '#eab308';
+                else if (city.aqi <= 150) color = '#f97316';
+                else if (city.aqi <= 200) color = '#ef4444';
+                else color = '#8b5cf6';
+                
                 html += `<tr>
                     <td><strong>${city.name}</strong></td>
-                    <td><span style="font-size:24px;color:${color}">${city.aqi}</span></td>
-                    <td>${city.pm25 || '—'} µg/m³</span></td>
-                    <td>${city.pm10 || '—'} µg/m³</span></td>
+                    <td><span style="font-size:26px;font-weight:bold;color:${color}">${city.aqi}</span></td>
+                    <td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td>
+                    <td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td>
                     <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
                 </tr>`;
             }
@@ -404,12 +379,12 @@
         function updateAirMap() {
             if (map) map.remove();
             map = L.map('airMap').setView([23.8859, 45.0792], 6);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
             for (const city of currentAirData) {
                 const cityCoord = cities.find(c => c.name === city.name);
                 if (cityCoord) {
-                    let color = city.aqi <= 50 ? '#22c55e' : city.aqi <= 100 ? '#eab308' : '#ef4444';
-                    L.circleMarker([cityCoord.lat, cityCoord.lon], { radius: 12, fillColor: color, color: 'white', weight: 2, fillOpacity: 0.7 })
+                    let color = city.aqi <= 50 ? '#22c55e' : city.aqi <= 100 ? '#eab308' : city.aqi <= 150 ? '#f97316' : '#ef4444';
+                    L.circleMarker([cityCoord.lat, cityCoord.lon], { radius: 14, fillColor: color, color: 'white', weight: 2, fillOpacity: 0.7 })
                         .bindPopup(`<b>${city.name}</b><br>AQI: ${city.aqi}<br>${city.status.icon} ${city.status.text}`)
                         .addTo(map);
                 }
@@ -432,197 +407,147 @@
             const avg = Math.round(currentAirData.reduce((s,c) => s + c.aqi, 0) / currentAirData.length);
             document.getElementById('avgAqi').innerHTML = avg;
             document.getElementById('updateTime').innerHTML = new Date().toLocaleString('ar-SA');
-            document.getElementById('agriculturalArea').innerHTML = '1.7';
             document.getElementById('totalStations').innerHTML = stations.length;
+            document.getElementById('agriculturalArea').innerHTML = '1.7';
         }
         
-        // ==================== محطات النفايات ====================
+        function updateRecommendations() {
+            const best = [...currentAirData].sort((a,b) => a.aqi - b.aqi)[0];
+            document.getElementById('investmentRecommendations').innerHTML = `
+                <div class="investor-card">
+                    <p>✅ أفضل مدينة للاستثمار: ${best?.name} (AQI ${best?.aqi})</p>
+                    <p>🚛 ${stations.length} محطة نفايات</p>
+                    <p>🌾 1.7 مليون هكتار أراضٍ زراعية</p>
+                </div>`;
+        }
+        
+        // محطات النفايات
         function displayStationsTable() {
             const byCity = {};
             stations.forEach(s => byCity[s.city] = (byCity[s.city] || 0) + 1);
-            let summaryHtml = '<ul>';
-            for (let city in byCity) summaryHtml += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
-            summaryHtml += '</ul>';
-            document.getElementById('stationsSummary').innerHTML = summaryHtml;
+            let summary = '<ul>';
+            for (let city in byCity) summary += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
+            summary += '</ul>';
+            document.getElementById('stationsSummary').innerHTML = summary;
             
-            let html = `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th><tr></thead><tbody>`;
-            stations.forEach((s, i) => {
-                let statusColor = s.status === 'Seasonal' ? '🟡 موسمية' : (s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل');
-                html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusColor}</td></tr>`;
+            let html = `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
+            stations.forEach(s => {
+                let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
+                html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
             });
             document.getElementById('stationsTable').innerHTML = html + `</tbody></table>`;
         }
         
         function showStationsOnMap() {
-            const mapContainer = document.getElementById('stationsMap');
-            mapContainer.style.display = 'block';
-            mapContainer.scrollIntoView({ behavior: 'smooth' });
+            const container = document.getElementById('stationsMap');
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth' });
             if (stationsMap) stationsMap.remove();
             stationsMap = L.map('stationsMap').setView([23.8859, 45.0792], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(stationsMap);
-            stations.forEach(station => {
-                let markerColor = station.status === 'Seasonal' ? 'orange' : (station.status === 'Closed' ? 'red' : 'green');
-                L.marker([station.lat, station.lon]).bindPopup(`<b>${station.name}</b><br>📍 ${station.city}<br>🟢 الحالة: ${station.status}`).addTo(stationsMap);
+            stations.forEach(s => {
+                L.marker([s.lat, s.lon]).bindPopup(`<b>${s.name}</b><br>${s.city}`).addTo(stationsMap);
             });
         }
         
         function exportStationsData() {
-            let csv = "ID,Name,City,Status,Latitude,Longitude\n";
+            let csv = "ID,Name,City,Status,Lat,Long\n";
             stations.forEach(s => csv += `${s.id},${s.name},${s.city},${s.status},${s.lat},${s.lon}\n`);
             const blob = new Blob([csv], {type: 'text/csv'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'waste_transfer_stations.csv';
+            link.download = 'stations.csv';
             link.click();
-            alert('✅ تم تصدير بيانات المحطات');
+            alert('✅ تم التصدير');
         }
         
-        // ==================== المياه والطاقة ====================
+        // المياه والطاقة
+        const waterData = { desalination: 2100, groundwater: 1200, treatedWastewater: 800, surfaceWater: 300 };
+        const energyData = { solar: 28, wind: 16, greenHydrogen: 15, fossil: 120 };
+        
         function displayWaterTable() {
-            const total = waterData.desalination + waterData.groundwater + waterData.treatedWastewater + waterData.surfaceWater;
-            let html = `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>تحلية المياه</td><td>${waterData.desalination.toLocaleString()}</td><td>${Math.round(waterData.desalination/total*100)}%</td></tr>
-                <tr><td>المياه الجوفية</td><td>${waterData.groundwater.toLocaleString()}</td><td>${Math.round(waterData.groundwater/total*100)}%</td></tr>
-                <tr><td>مياه معالجة</td><td>${waterData.treatedWastewater.toLocaleString()}</td><td>${Math.round(waterData.treatedWastewater/total*100)}%</td></tr>
-                <tr><td>المياه السطحية</td><td>${waterData.surfaceWater.toLocaleString()}</td><td>${Math.round(waterData.surfaceWater/total*100)}%</td></tr>
+            let html = `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³)</th><th>النسبة</th></tr></thead><tbody>
+                <tr><td>تحلية المياه</td><td>2100</span></td><td>${Math.round(2100/4400*100)}%</span></td>
+                <tr><td>المياه الجوفية</span></td><td>1200</span></td><td>${Math.round(1200/4400*100)}%</span></td>
+                <tr><td>مياه معالجة</span></td><td>800</span></td><td>${Math.round(800/4400*100)}%</span></td>
+                <tr><td>المياه السطحية</span></td><td>300</span></td><td>${Math.round(300/4400*100)}%</span></td>
             </tbody></table>`;
             document.getElementById('waterTable').innerHTML = html;
             new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
         }
         
         function displayEnergyTable() {
-            const total = energyData.solar + energyData.wind + energyData.greenHydrogen + energyData.fossil;
             let html = `<table><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>الطاقة الشمسية</td><td>${energyData.solar}</td><td>${Math.round(energyData.solar/total*100)}%</td></tr>
-                <tr><td>طاقة الرياح</td><td>${energyData.wind}</td><td>${Math.round(energyData.wind/total*100)}%</td></tr>
-                <tr><td>الهيدروجين الأخضر</td><td>${energyData.greenHydrogen}</td><td>${Math.round(energyData.greenHydrogen/total*100)}%</td></tr>
-                <tr><td>الوقود الأحفوري</td><td>${energyData.fossil}</td><td>${Math.round(energyData.fossil/total*100)}%</td></tr>
+                <tr><td>الطاقة الشمسية</span></td><td>28</span></td><td>${Math.round(28/179*100)}%</span></tr>
+                <tr><td>طاقة الرياح</span></td><td>16</span></td><td>${Math.round(16/179*100)}%</span></tr>
+                <tr><td>الهيدروجين الأخضر</span></td><td>15</span></td><td>${Math.round(15/179*100)}%</span></tr>
+                <tr><td>الوقود الأحفوري</span></td><td>120</span></td><td>${Math.round(120/179*100)}%</span></tr>
             </tbody></table>`;
             document.getElementById('energyTable').innerHTML = html;
             new Chart(document.getElementById('energyMixChart'), { type: 'bar', data: { labels: ['شمسية', 'رياح', 'هيدروجين', 'أحفوري'], datasets: [{ label: 'جيجاواط', data: [28, 16, 15, 120], backgroundColor: '#eab308', borderRadius: 8 }] } });
         }
         
-        // ==================== الزراعة ====================
+        // الزراعة
         function initAgricultureMap() {
-            const mapContainer = document.getElementById('agricultureMap');
-            if (!mapContainer) {
-                console.error('الخريطة غير موجودة في الصفحة');
-                return;
-            }
-            
-            if (agricultureMap) {
-                agricultureMap.remove();
-                agricultureMap = null;
-            }
-            
-            try {
-                agricultureMap = L.map('agricultureMap').setView([23.8859, 45.0792], 6);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
-                }).addTo(agricultureMap);
-                
-                const agriculturalAreas = [
-                    { name: 'منطقة القصيم', lat: 26.3361, lon: 43.9641, size: '400,000 هكتار', crops: 'تمور، حمضيات، خضروات' },
-                    { name: 'منطقة تبوك', lat: 28.3835, lon: 36.5552, size: '250,000 هكتار', crops: 'ورود، فواكه، خضروات' },
-                    { name: 'منطقة حائل', lat: 27.5214, lon: 41.6907, size: '200,000 هكتار', crops: 'قمح، شعير، تمور' },
-                    { name: 'وادي الدواسر', lat: 20.4667, lon: 44.9167, size: '300,000 هكتار', crops: 'قمح، أعلاف، خضروات' },
-                    { name: 'منطقة جازان', lat: 16.8894, lon: 42.5559, size: '150,000 هكتار', crops: 'بن، مانجو، استوائيات' },
-                    { name: 'منطقة عسير', lat: 18.2164, lon: 42.5053, size: '180,000 هكتار', crops: 'قمح، فواكه، ورد' }
-                ];
-                
-                agriculturalAreas.forEach(area => {
-                    const popupContent = `
-                        <b>${area.name}</b><br>
-                        🌾 المساحة: ${area.size}<br>
-                        🌱 المنتجات: ${area.crops}
-                    `;
-                    L.circleMarker([area.lat, area.lon], { 
-                        radius: 18, 
-                        fillColor: '#22c55e', 
-                        color: 'white', 
-                        weight: 2, 
-                        fillOpacity: 0.7 
-                    }).bindPopup(popupContent).addTo(agricultureMap);
-                });
-                
-                console.log('تم تهيئة خريطة الزراعة بنجاح');
-            } catch (error) {
-                console.error('خطأ في تهيئة الخريطة:', error);
-                mapContainer.innerHTML = '<p style="color: red; text-align: center;">حدث خطأ في تحميل الخريطة. يرجى تحديث الصفحة.</p>';
-            }
-        }
-        
-        // ==================== التوصيات ====================
-        function updateRecommendations() {
-            if (!currentAirData.length) return;
-            const best = [...currentAirData].sort((a,b) => a.aqi - b.aqi)[0];
-            const html = `<div class="investor-card">
-                <p>✅ <strong>أفضل مدينة للاستثمار السياحي:</strong> ${best?.name} (AQI ${best?.aqi})</p>
-                <p>🚛 <strong>فرص قطاع النفايات:</strong> يوجد ${stations.length} محطة نقل نفايات موزعة في 5 مدن</p>
-                <p>🌾 <strong>فرص قطاع الزراعة:</strong> 1.7 مليون هكتار أراضٍ زراعية، وحوافز حكومية للمستثمرين</p>
-                <p>💧 <strong>فرص قطاع المياه:</strong> 800 مليون م³ مياه معالجة سنوياً قابلة للاستخدام الزراعي</p>
-            </div>`;
-            document.getElementById('investmentRecommendations').innerHTML = html;
+            const container = document.getElementById('agricultureMap');
+            if (!container) return;
+            if (agricultureMap) agricultureMap.remove();
+            agricultureMap = L.map('agricultureMap').setView([23.8859, 45.0792], 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(agricultureMap);
+            const areas = [
+                { name: 'القصيم', lat: 26.3361, lon: 43.9641, info: '400,000 هكتار - تمور، حمضيات' },
+                { name: 'تبوك', lat: 28.3835, lon: 36.5552, info: '250,000 هكتار - ورود، فواكه' },
+                { name: 'حائل', lat: 27.5214, lon: 41.6907, info: '200,000 هكتار - قمح، تمور' },
+                { name: 'وادي الدواسر', lat: 20.4667, lon: 44.9167, info: '300,000 هكتار - قمح، خضروات' },
+                { name: 'جازان', lat: 16.8894, lon: 42.5559, info: '150,000 هكتار - بن، مانجو' },
+                { name: 'عسير', lat: 18.2164, lon: 42.5053, info: '180,000 هكتار - قمح، فواكه' }
+            ];
+            areas.forEach(a => {
+                L.circleMarker([a.lat, a.lon], { radius: 18, fillColor: '#22c55e', color: 'white', weight: 2, fillOpacity: 0.7 })
+                    .bindPopup(`<b>${a.name}</b><br>${a.info}`).addTo(agricultureMap);
+            });
         }
         
         function downloadFullReport() {
-            let report = "EcoData Saudi - التقرير البيئي والزراعي الشامل\n" + "=".repeat(50);
-            report += `\nالتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n`;
-            report += "1. جودة الهواء:\n" + currentAirData.map(c => `   - ${c.name}: AQI ${c.aqi}`).join('\n');
-            report += `\n\n2. محطات النفايات:\n   - عدد المحطات: ${stations.length}`;
-            report += `\n\n3. المياه:\n   - تحلية: 2100 مليون م³\n   - مياه معالجة: 800 مليون م³`;
-            report += `\n\n4. الطاقة المتجددة:\n   - هدف 2030: 50% من الكهرباء`;
-            report += `\n\n5. الزراعة:\n   - أراضٍ زراعية: 1.7 مليون هكتار\n   - منصات حكومية: حصاد، HSR، GASTAT`;
-            report += "\n\n" + "=".repeat(50) + "\nللاستفسارات: ecodata@saudi.com";
-            
+            let report = "التقرير البيئي الشامل\n" + currentAirData.map(c => `${c.name}: AQI ${c.aqi}`).join('\n');
             const blob = new Blob([report], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `EcoData_Report_${new Date().toISOString().slice(0,10)}.txt`;
+            link.download = 'report.txt';
             link.click();
-            alert('✅ تم تحميل التقرير');
+            alert('✅ تم التحميل');
         }
         
         function shareReport() {
-            if (!currentAirData.length) return;
             const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `🌿 EcoData Saudi\n📊 ${currentAirData.length} مدينة\n🏆 أنقى مدينة: ${best?.name} (AQI ${best?.aqi})\n🚛 ${stations.length} محطة نفايات\n🌾 1.7M هكتار أراضٍ زراعية\n🎯 هدف 2030: 50% طاقة متجددة`;
+            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi})`;
             if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
-            else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
+            else alert('تم نسخ التقرير');
         }
         
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const activeTab = document.getElementById(tabId);
-            if (activeTab) activeTab.classList.add('active');
-            const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick')?.includes(tabId));
-            if (clickedBtn) clickedBtn.classList.add('active');
-            
-            if (tabId === 'agriculture-tab') {
-                setTimeout(() => initAgricultureMap(), 200);
-            }
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            if (tabId === 'agriculture-tab') setTimeout(() => initAgricultureMap(), 200);
         }
         
-        document.getElementById('newsletterForm')?.addEventListener('submit', function(e) { e.preventDefault(); alert(`✅ شكراً ${document.getElementById('subName').value}! تم تسجيل بريدك.`); this.reset(); });
+        document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ شكراً للاشتراك');
+            this.reset();
+        });
         
-        async function fetchAllData() { 
-            let spinner = document.getElementById('globalSpinner');
-            if (!spinner) {
-                spinner = document.createElement('div');
-                spinner.id = 'globalSpinner';
-                spinner.className = 'spinner';
-                spinner.innerHTML = '<div></div><p>جاري تحديث البيانات...</p>';
-                document.body.appendChild(spinner);
-            }
-            await fetchAirQuality(); 
-            displayStationsTable(); 
+        async function fetchAllData() {
+            let spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            spinner.innerHTML = '<div></div><p>جاري التحميل...</p>';
+            document.body.appendChild(spinner);
+            await fetchAirQuality();
+            displayStationsTable();
             displayWaterTable();
             displayEnergyTable();
-            updateRecommendations();
-            setTimeout(() => {
-                if (document.getElementById('agriculture-tab').classList.contains('active')) initAgricultureMap();
-            }, 100);
             spinner.remove();
         }
         
