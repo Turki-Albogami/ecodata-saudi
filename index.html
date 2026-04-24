@@ -31,7 +31,6 @@
         .card-red { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
         .card-blue { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; }
         
-        /* ========== تنسيق الجدول المحسن ========== */
         .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: center; background: white; }
         th, td { padding: 14px 12px; text-align: center; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
@@ -56,11 +55,10 @@
         
         .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
         .three-columns { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 20px; }
-        .map-container { height: 450px; border-radius: 15px; overflow: hidden; margin-top: 20px; border: 1px solid #e2e8f0; }
+        .map-container { height: 450px; border-radius: 15px; overflow: hidden; margin-top: 20px; border: 1px solid #e2e8f0; background: #f8fafc; }
         .investor-card { background: #f1f5f9; padding: 20px; border-radius: 15px; margin-bottom: 20px; border-right: 4px solid #ffd700; }
         .btn { display: inline-block; background: #0d5c2e; color: white; padding: 10px 20px; border-radius: 30px; text-decoration: none; border: none; cursor: pointer; font-size: 14px; margin-top: 10px; text-align: center; }
         .btn:hover { background: #0a4522; }
-        .refresh-btn { background: #1e293b; color: white; border: none; padding: 8px 20px; border-radius: 25px; cursor: pointer; }
         
         form input, form textarea, form select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; }
         form button { background: #0d5c2e; color: white; padding: 12px 30px; border: none; border-radius: 30px; cursor: pointer; font-weight: bold; }
@@ -86,7 +84,7 @@
     <header>
         <div class="container">
             <h1>🌿 EcoData Saudi <span>المنصة البيئية والزراعية المتكاملة</span></h1>
-            <p>جودة الهواء | محطات النفايات | المياه | الطاقة | الزراعة</p>
+            <p>جودة الهواء | محطات النفايات | المياه | الطاقة المتجددة (53 مشروعاً) | الزراعة</p>
             <div class="last-update">
                 آخر تحديث: <span id="updateTime">جاري التحميل...</span>
                 <button class="refresh-btn" onclick="fetchAllData()">🔄 تحديث الآن</button>
@@ -100,9 +98,9 @@
             <div class="stats-grid">
                 <div class="stat-card card-green"><h3 id="avgAqi">0</h3><p>متوسط AQI</p><small>جودة الهواء</small></div>
                 <div class="stat-card card-dark"><h3 id="totalStations">0</h3><p>محطة نقل نفايات</p><small>إدارة النفايات</small></div>
-                <div class="stat-card card-blue"><h3 id="agriculturalArea">0</h3><p>مليون هكتار</p><small>أراضٍ زراعية</small></div>
-                <div class="stat-card card-yellow"><h3 id="waterReuse">35%</h3><p>إعادة استخدام</p><small>المياه المعالجة</small></div>
-                <div class="stat-card card-red"><h3 id="renewableShare">22%</h3><p>طاقة متجددة</p><small>هدف 2030: 50%</small></div>
+                <div class="stat-card card-blue"><h3 id="totalEnergyProjects">0</h3><p>مشروع طاقة متجددة</p><small>53 مشروعاً في السعودية</small></div>
+                <div class="stat-card card-yellow"><h3>35%</h3><p>إعادة استخدام</p><small>المياه المعالجة</small></div>
+                <div class="stat-card card-red"><h3>50%</h3><p>طاقة متجددة</p><small>هدف 2030</small></div>
             </div>
             <div class="investor-card">
                 <strong>📌 منظومة متكاملة:</strong> نغطي 5 قطاعات بيئية رئيسية (هواء، نفايات، مياه، طاقة، زراعة) ببيانات حية ومحللة لدعم المستثمرين واتخاذ القرارات المستدامة.
@@ -113,7 +111,7 @@
             <button class="tab-btn active" onclick="showTab('air-tab')">🌬️ جودة الهواء</button>
             <button class="tab-btn" onclick="showTab('stations-tab')">🚛 محطات النفايات</button>
             <button class="tab-btn" onclick="showTab('water-tab')">💧 المياه</button>
-            <button class="tab-btn" onclick="showTab('energy-tab')">☀️ الطاقة</button>
+            <button class="tab-btn" onclick="showTab('energy-tab')">☀️ الطاقة المتجددة</button>
             <button class="tab-btn" onclick="showTab('agriculture-tab')">🌾 الزراعة</button>
             <button class="tab-btn" onclick="showTab('investors-tab')">💼 للمستثمرين</button>
         </div>
@@ -145,8 +143,8 @@
                         <button onclick="exportStationsData()" class="btn" style="background:#eab308;">📥 تحميل البيانات</button>
                     </div>
                 </div>
-                <div id="stationsMap" class="map-container" style="display: none;"></div>
-                <div id="stationsTable" style="margin-top: 20px; overflow-x: auto;"></div>
+                <div id="stationsMap" class="map-container" style="height: 500px; display: none;"></div>
+                <div id="stationsTable" style="margin-top: 20px;"></div>
             </section>
         </div>
 
@@ -162,15 +160,29 @@
             </section>
         </div>
 
-        <!-- تبويب الطاقة -->
+        <!-- تبويب الطاقة المتجددة -->
         <div id="energy-tab" class="tab-content">
             <section>
-                <h2>☀️ الطاقة المتجددة في السعودية</h2>
-                <div id="energyTable"></div>
-                <div class="two-columns" style="margin-top:20px">
-                    <div><h3>مزيج الطاقة 2030</h3><canvas id="energyMixChart"></canvas></div>
-                    <div class="investor-card"><h3>⚡ مشاريع كبرى</h3><ul><li>🟢 سدير للطاقة الشمسية (1500 ميجاواط)</li><li>🟢 دومة الجندل للرياح (400 ميجاواط)</li><li>🟢 الهيدروجين الأخضر في نيوم</li></ul></div>
+                <h2>🔋 مشاريع الطاقة المتجددة في السعودية (53 مشروعاً)</h2>
+                <div class="two-columns" style="margin-bottom: 20px;">
+                    <div class="investor-card">
+                        <h3>📊 إحصائيات سريعة</h3>
+                        <p><strong>⚡ إجمالي المشاريع:</strong> 53</p>
+                        <p><strong>✅ المنفذة (Installed):</strong> <span id="installedCount">0</span> مشروع</p>
+                        <p><strong>📝 الموقعة (PPA Signed):</strong> <span id="signedCount">0</span> مشروع</p>
+                        <p><strong>🔨 المطروحة (Tendered):</strong> <span id="tenderedCount">0</span> مشروع</p>
+                        <p><strong>🌞 الطاقة الشمسية:</strong> <span id="solarCount">0</span> مشروع</p>
+                        <p><strong>💨 طاقة الرياح:</strong> <span id="windCount">0</span> مشروع</p>
+                    </div>
+                    <div class="investor-card">
+                        <h3>🏆 أكبر 3 مشاريع</h3>
+                        <div id="topProjects"></div>
+                    </div>
                 </div>
+                <button onclick="showEnergyProjectsMap()" class="btn">🗺️ عرض المشاريع على الخريطة</button>
+                <button onclick="exportEnergyProjects()" class="btn" style="background:#eab308;">📥 تحميل البيانات (CSV)</button>
+                <div id="energyProjectsMap" class="map-container" style="height: 500px; display: none; margin-top: 20px;"></div>
+                <div id="energyProjectsTable" style="margin-top: 20px;"></div>
             </section>
         </div>
 
@@ -188,39 +200,15 @@
                     <div class="stat-card"><h3>50%</h3><p>اكتفاء ذاتي من الدواجن</p></div>
                 </div>
             </section>
-            
             <section>
                 <h2>📋 المنصات والخدمات الزراعية الحكومية</h2>
-                <div class="investor-card">
-                    <h3>📡 منصة الحصر الزراعي (HSR)</h3>
-                    <p>بيانات حية للمناطق الزراعية باستخدام الطائرات بدون طيار</p>
-                    <a href="https://hsr.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
-                </div>
-                <div class="investor-card">
-                    <h3>🌾 نظام حصاد المطور (Hassad)</h3>
-                    <p>خدمات رقمية للمستثمرين الزراعيين</p>
-                    <a href="https://hassad.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a>
-                </div>
-                <div class="investor-card">
-                    <h3>📊 المسح الزراعي الشامل 2024 (GASTAT)</h3>
-                    <p>الجهة: الهيئة العامة للإحصاء | التغطية: جميع المناطق والمحافظات</p>
-                    <a href="https://www.stats.gov.sa" target="_blank" class="btn" style="background:#eab308;">🔗 عرض التقارير</a>
-                </div>
+                <div class="investor-card"><h3>📡 منصة الحصر الزراعي (HSR)</h3><p>بيانات حية للمناطق الزراعية باستخدام الطائرات بدون طيار</p><a href="https://hsr.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a></div>
+                <div class="investor-card"><h3>🌾 نظام حصاد المطور (Hassad)</h3><p>خدمات رقمية للمستثمرين الزراعيين</p><a href="https://hassad.mewa.gov.sa" target="_blank" class="btn">🔗 زيارة المنصة</a></div>
+                <div class="investor-card"><h3>📊 المسح الزراعي الشامل 2024 (GASTAT)</h3><p>الجهة: الهيئة العامة للإحصاء | التغطية: جميع المناطق والمحافظات</p><a href="https://www.stats.gov.sa" target="_blank" class="btn" style="background:#eab308;">🔗 عرض التقارير</a></div>
             </section>
-            
             <section>
                 <h2>🗺️ خريطة المناطق الزراعية الرئيسية</h2>
                 <div id="agricultureMap" class="map-container"></div>
-            </section>
-            
-            <section>
-                <h2>💼 فرص استثمارية في القطاع الزراعي</h2>
-                <div class="two-columns">
-                    <div class="investor-card"><h3>🌿 الزراعة العضوية</h3><p>الطلب العالمي على المنتجات العضوية في ارتفاع</p></div>
-                    <div class="investor-card"><h3>💧 الري الحديث</h3><p>تقنيات الري توفر 50% من المياه</p></div>
-                    <div class="investor-card"><h3>♻️ تدوير المخلفات الزراعية</h3><p>تحويل المخلفات إلى أسمدة عضوية</p></div>
-                    <div class="investor-card"><h3>🌱 البيوت المحمية</h3><p>إنتاج على مدار العام</p></div>
-                </div>
             </section>
         </div>
 
@@ -229,14 +217,8 @@
             <section>
                 <h2>📊 تقارير وتحليلات استثمارية</h2>
                 <div class="two-columns">
-                    <div>
-                        <h3>ترتيب المدن حسب النقاء</h3>
-                        <canvas id="rankingChart"></canvas>
-                    </div>
-                    <div>
-                        <h3>🎯 توصيات استثمارية</h3>
-                        <div id="investmentRecommendations" style="background:#f1f5f9; padding:20px; border-radius:15px;"></div>
-                    </div>
+                    <div><h3>ترتيب المدن حسب النقاء</h3><canvas id="rankingChart"></canvas></div>
+                    <div><h3>🎯 توصيات استثمارية</h3><div id="investmentRecommendations" style="background:#f1f5f9; padding:20px; border-radius:15px;"></div></div>
                 </div>
                 <div style="text-align:center; margin-top:20px">
                     <button class="btn" onclick="downloadFullReport()">📥 تحميل التقرير الشامل</button>
@@ -258,17 +240,12 @@
     <footer>
         <div class="container">
             <p>© 2025 EcoData Saudi - المنصة البيئية والزراعية المتكاملة</p>
-            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات</p>
+            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات | الطاقة: وزارة الطاقة (53 مشروعاً)</p>
         </div>
     </footer>
 
     <script>
-        let currentAirData = [];
-        let map = null;
-        let agricultureMap = null;
-        let stationsMap = null;
-        
-        // بيانات محطات نقل النفايات
+        // ==================== بيانات محطات النفايات ====================
         const stations = [
             { id: "TS1", name: "Al Janadriyyah", city: "الرياض", lat: 21.62699, lon: 46.08904, status: "Unconfirmed" },
             { id: "TS2", name: "Al Shmal & Maathar", city: "الرياض", lat: 25.15213, lon: 46.83394, status: "Unconfirmed" },
@@ -298,8 +275,68 @@
             { id: "TS26", name: "Al-Ma'isam", city: "مكة", lat: 21.59703, lon: 39.90480, status: "Seasonal" },
             { id: "TS27", name: "Buraydah", city: "القصيم", lat: 21.35508, lon: 43.97081, status: "Unconfirmed" }
         ];
-        
-        // المدن
+
+        // ==================== بيانات مشاريع الطاقة المتجددة (53 مشروعاً) ====================
+        const energyProjects = [
+            { id: 1, name: "Sakaka", type: "Solar", capacity: 0.3, year: 2020, status: "Installed", region: "Al-Jawf", city: "Sakaka", lat: 29.9129, lon: 40.0533, developer: "ACWA Power" },
+            { id: 2, name: "Dumat Al-Jandal", type: "Wind", capacity: 0.4, year: 2022, status: "Installed", region: "Al-Jawf", city: "Dumat al-Jandal", lat: 29.8098, lon: 39.8807, developer: "Masdar, EDF Renewables" },
+            { id: 3, name: "Ar Rass 1", type: "Solar", capacity: 0.7, year: 2024, status: "Installed", region: "Al-Qassim", city: "Ar Rass", lat: 25.8597, lon: 43.4899, developer: "ACWA Power" },
+            { id: 4, name: "Rabigh 1", type: "Solar", capacity: 0.3, year: 2023, status: "Installed", region: "Makkah", city: "Rabigh", lat: 22.7955, lon: 39.0029, developer: "MARUBENI" },
+            { id: 5, name: "Jeddah", type: "Solar", capacity: 0.3, year: 2023, status: "Installed", region: "Makkah", city: "Jeddah", lat: 21.5288, lon: 39.1844, developer: "Masdar, EDF Renewables" },
+            { id: 6, name: "Sudair", type: "Solar", capacity: 1.5, year: 2023, status: "Installed", region: "Riyadh", city: "Sudair", lat: 25.7754, lon: 45.5802, developer: "ACWA Power" },
+            { id: 7, name: "Al Masa'a", type: "Solar", capacity: 1.0, year: 2027, status: "PPA Signed", region: "Hail", city: "Al Masa'a", lat: 26.5469, lon: 40.5151, developer: "EDF Renewables" },
+            { id: 8, name: "Henakiyah 2", type: "Solar", capacity: 0.4, year: 2026, status: "PPA Signed", region: "Madinah", city: "Al Henakiyah", lat: 24.9124, lon: 40.4402, developer: "EDF Renewables" },
+            { id: 9, name: "Rabigh 2", type: "Solar", capacity: 0.3, year: 2026, status: "PPA Signed", region: "Makkah", city: "Rabigh", lat: 22.7908, lon: 38.9951, developer: "TotalEnergies" },
+            { id: 10, name: "Najran", type: "Solar", capacity: 1.4, year: 2028, status: "PPA Signed", region: "Najran", city: "Najran", lat: 17.5231, lon: 44.1726, developer: "Masdar" },
+            { id: 11, name: "Samtah", type: "Solar", capacity: 0.6, year: 2027, status: "PPA Signed", region: "Jazan", city: "Samtah", lat: 16.6038, lon: 42.9235, developer: "EDF Renewables" },
+            { id: 12, name: "Al Darb", type: "Solar", capacity: 0.6, year: 2027, status: "PPA Signed", region: "Jazan", city: "Ad Darb", lat: 17.7228, lon: 42.2684, developer: "Masdar" },
+            { id: 13, name: "Sufun", type: "Solar", capacity: 0.4, year: 2027, status: "PPA Signed", region: "Hail", city: "As Sufun", lat: 27.7485, lon: 41.5170, developer: "TotalEnergies" },
+            { id: 14, name: "Dwadmi", type: "Wind", capacity: 1.5, year: 2028, status: "PPA Signed", region: "Riyadh", city: "Dawadmi", lat: 24.5236, lon: 44.4426, developer: "KEPCO" },
+            { id: 15, name: "Layla", type: "Solar", capacity: 0.091, year: 2024, status: "Installed", region: "Riyadh", city: "Layla", lat: 22.2921, lon: 46.7066, developer: "ACWA Power" },
+            { id: 16, name: "Saad 1", type: "Solar", capacity: 0.3, year: 2024, status: "Installed", region: "Riyadh", city: "Sa'ad", lat: 25.1104, lon: 47.5543, developer: "Jinko Power" },
+            { id: 17, name: "Wadi Aldawaser", type: "Solar", capacity: 0.112, year: 2025, status: "Installed", region: "Riyadh", city: "Wadi Aldawaser", lat: 20.3317, lon: 44.7490, developer: "TotalEnergies" },
+            { id: 18, name: "As Sdawi", type: "Solar", capacity: 2.0, year: 2027, status: "PPA Signed", region: "Eastern Province", city: "Al Sadawi", lat: 28.1098, lon: 46.7126, developer: "Masdar" },
+            { id: 19, name: "Shuaibah 2", type: "Solar", capacity: 2.06, year: 2024, status: "Installed", region: "Makkah", city: "Alshuaibah", lat: 20.7797, lon: 39.5564, developer: "ACWA Power" },
+            { id: 20, name: "Alghat", type: "Wind", capacity: 0.6, year: 2026, status: "PPA Signed", region: "Riyadh", city: "AL Ghat", lat: 26.0250, lon: 44.9491, developer: "MARUBENI" },
+            { id: 21, name: "Henakiyah 1", type: "Solar", capacity: 1.1, year: 2025, status: "Installed", region: "Madinah", city: "Al Henakiyah", lat: 24.9124, lon: 40.4402, developer: "Masdar, EDF Renewables" },
+            { id: 22, name: "Tabarjal", type: "Solar", capacity: 0.4, year: 2026, status: "PPA Signed", region: "Al-Jawf", city: "Tubarjal", lat: 30.5108, lon: 38.2145, developer: "Jinko Power" },
+            { id: 23, name: "Waad Al Shammal", type: "Wind", capacity: 0.5, year: 2026, status: "PPA Signed", region: "Northern Borders", city: "Waad Al Shamal", lat: 31.6430, lon: 38.8675, developer: "MARUBENI" },
+            { id: 24, name: "Shuaibah 1", type: "Solar", capacity: 0.6, year: 2024, status: "Installed", region: "Makkah", city: "Alshuaibah", lat: 20.7797, lon: 39.5564, developer: "ACWA Power" },
+            { id: 25, name: "Kahfah", type: "Solar", capacity: 1.425, year: 2025, status: "Installed", region: "Hail", city: "Alkahfah", lat: 27.0730, lon: 43.0165, developer: "ACWA Power" },
+            { id: 26, name: "Ar Rass 2", type: "Solar", capacity: 2.0, year: 2025, status: "Installed", region: "Al-Qassim", city: "Ar Rass", lat: 25.8597, lon: 43.4899, developer: "ACWA Power" },
+            { id: 27, name: "Saad 2", type: "Solar", capacity: 1.125, year: 2025, status: "Installed", region: "Riyadh", city: "Sa'ad", lat: 25.1104, lon: 47.5543, developer: "ACWA Power" },
+            { id: 28, name: "Haden", type: "Solar", capacity: 2.0, year: 2027, status: "PPA Signed", region: "Makkah", city: "Al Taif", lat: 21.7260, lon: 41.1257, developer: "ACWA Power" },
+            { id: 29, name: "Muwayh", type: "Solar", capacity: 2.0, year: 2027, status: "PPA Signed", region: "Makkah", city: "Al Muwayh", lat: 22.7440, lon: 41.5874, developer: "ACWA Power" },
+            { id: 30, name: "Khushaybi", type: "Solar", capacity: 1.5, year: 2027, status: "PPA Signed", region: "Al-Qassim", city: "Al-Khushaybi", lat: 25.5730, lon: 43.3542, developer: "ACWA Power" },
+            { id: 31, name: "Shaqra", type: "Wind", capacity: 1.0, year: 2028, status: "PPA Signed", region: "Riyadh", city: "Shaqra", lat: 25.2398, lon: 45.2532, developer: "ACWA Power" },
+            { id: 32, name: "Bisha", type: "Solar", capacity: 3.0, year: 2028, status: "PPA Signed", region: "Aseer", city: "Bisha", lat: 20.0069, lon: 42.5909, developer: "ACWA Power" },
+            { id: 33, name: "Khulis", type: "Solar", capacity: 2.0, year: 2028, status: "PPA Signed", region: "Makkah", city: "Khulis", lat: 22.1444, lon: 39.3669, developer: "ACWA Power" },
+            { id: 34, name: "Starah", type: "Wind", capacity: 2.0, year: 2028, status: "PPA Signed", region: "Riyadh", city: "Starah", lat: 22.6091, lon: 46.3199, developer: "ACWA Power" },
+            { id: 35, name: "Afif 1", type: "Solar", capacity: 2.0, year: 2028, status: "PPA Signed", region: "Riyadh", city: "Afif", lat: 23.9144, lon: 42.9266, developer: "ACWA Power" },
+            { id: 36, name: "Al Humaij", type: "Solar", capacity: 3.0, year: 2028, status: "PPA Signed", region: "Madinah", city: "Al Humaij", lat: 25.0376, lon: 41.2288, developer: "ACWA Power" },
+            { id: 37, name: "Afif 2", type: "Solar", capacity: 2.0, year: 2028, status: "PPA Signed", region: "Riyadh", city: "Afif", lat: 23.9144, lon: 42.9266, developer: "ACWA Power" },
+            { id: 38, name: "As Sdawi 2", type: "Solar", capacity: 3.0, year: 2029, status: "Tendered", region: "Eastern Province", city: "Al Sadawi", lat: 28.1098, lon: 46.7126, developer: "TBA" },
+            { id: 39, name: "Khushaybi 2", type: "Solar", capacity: 0.5, year: 2029, status: "Tendered", region: "Al-Qassim", city: "Al-Khushaybi", lat: 25.5730, lon: 43.3542, developer: "TBA" },
+            { id: 40, name: "Muwayh 2", type: "Solar", capacity: 2.0, year: 2029, status: "Tendered", region: "Makkah", city: "Al Muwayh", lat: 22.7440, lon: 41.5874, developer: "TBA" },
+            { id: 41, name: "Henakiyah 3", type: "Solar", capacity: 1.5, year: 2029, status: "Tendered", region: "Madinah", city: "Al Henakiyah", lat: 24.9124, lon: 40.4402, developer: "TBA" },
+            { id: 42, name: "Haden 2", type: "Solar", capacity: 2.0, year: 2029, status: "Tendered", region: "Makkah", city: "Al Taif", lat: 21.7260, lon: 41.1257, developer: "TBA" },
+            { id: 43, name: "Yunbu", type: "Wind", capacity: 0.7, year: 2027, status: "PPA Signed", region: "Madinah", city: "Yunbu", lat: 24.1535, lon: 38.1710, developer: "ACWA Power" },
+            { id: 44, name: "Tabarjal 2", type: "Solar", capacity: 1.4, year: 2029, status: "Tendered", region: "Al-Jawf", city: "Tubarjal", lat: 30.5108, lon: 38.2145, developer: "TBA" },
+            { id: 45, name: "Bilghah", type: "Wind", capacity: 1.3, year: 2029, status: "Tendered", region: "Madinah", city: "Al Henakiyah", lat: 25.1735, lon: 41.6118, developer: "TBA" },
+            { id: 46, name: "Shegran", type: "Wind", capacity: 0.9, year: 2029, status: "Tendered", region: "Madinah", city: "Al Henakiyah", lat: 25.0206, lon: 40.7019, developer: "TBA" },
+            { id: 47, name: "South Ola", type: "Solar", capacity: 0.5, year: 2029, status: "Tendered", region: "Madinah", city: "Al Ola", lat: 26.5645, lon: 37.9659, developer: "TBA" },
+            { id: 48, name: "Mawqaq", type: "Solar", capacity: 0.6, year: 2029, status: "Tendered", region: "Hail", city: "Mawqaq", lat: 27.3790, lon: 41.1738, developer: "TBA" },
+            { id: 49, name: "Tathleeth", type: "Solar", capacity: 0.6, year: 2029, status: "Tendered", region: "Aseer", city: "Tathleeth", lat: 19.5273, lon: 43.5133, developer: "TBA" },
+            { id: 50, name: "Baeyda'a Nathel", type: "Wind", capacity: 1.0, year: 2029, status: "Tendered", region: "Riyadh", city: "Baeyda'a Nathel", lat: 23.8888, lon: 42.6709, developer: "TBA" },
+            { id: 51, name: "Al Qirah", type: "Wind", capacity: 1.5, year: 2029, status: "Tendered", region: "Aseer", city: "Al Qirah", lat: 19.9802, lon: 44.0619, developer: "TBA" },
+            { id: 52, name: "Samha", type: "Wind", capacity: 0.8, year: 2029, status: "Tendered", region: "Al-Qassim", city: "Samha", lat: 25.4837, lon: 43.3648, developer: "TBA" },
+            { id: 53, name: "Al-Leeth", type: "Solar", capacity: 3.0, year: 2029, status: "Tendered", region: "Makkah", city: "Al-Leeth", lat: 20.1428, lon: 40.2720, developer: "TBA" }
+        ];
+
+        // ==================== بيانات عامة ====================
+        let currentAirData = [];
+        let map = null, agricultureMap = null, stationsMap = null, energyMap = null;
+
         const cities = [
             { name: 'الرياض', lat: 24.7136, lon: 46.6753 },
             { name: 'جدة', lat: 21.5433, lon: 39.1728 },
@@ -310,8 +347,8 @@
             { name: 'تبوك', lat: 28.3835, lon: 36.5552 },
             { name: 'حائل', lat: 27.5214, lon: 41.6907 }
         ];
-        
-        // حساب AQI حسب معايير EPA
+
+        // حساب AQI
         function calculateAQI(pm25) {
             if (!pm25 || isNaN(pm25) || pm25 < 0) return 50;
             if (pm25 <= 12.0) return Math.round((50 / 12) * pm25);
@@ -321,7 +358,7 @@
             if (pm25 <= 250.4) return Math.round(200 + (pm25 - 150.4) * (50 / 100));
             return Math.round(300 + (pm25 - 250.4) * (50 / 100));
         }
-        
+
         function getStatus(aqi) {
             if (aqi <= 50) return { text: 'جيد', class: 'status-good', icon: '🟢' };
             if (aqi <= 100) return { text: 'متوسط', class: 'status-moderate', icon: '🟡' };
@@ -329,8 +366,8 @@
             if (aqi <= 200) return { text: 'غير صحي', class: 'status-very-unhealthy', icon: '🔴' };
             return { text: 'خطير جداً', class: 'status-hazardous', icon: '🟣' };
         }
-        
-        // جلب بيانات جودة الهواء
+
+        // جودة الهواء
         async function fetchAirQuality() {
             let results = [];
             for (const city of cities) {
@@ -361,20 +398,9 @@
             updateAvgAqi();
             updateRecommendations();
         }
-        
+
         function displayAirTable() {
-            let html = `<div class="table-wrapper"><table>
-                <thead>
-                    <tr>
-                        <th>المدينة</th>
-                        <th>AQI</th>
-                        <th>PM2.5</th>
-                        <th>PM10</th>
-                        <th>الحالة</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
+            let html = `<div class="table-wrapper">` + `<tr><thead>运转<th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></tr></thead><tbody>`;
             for (const city of currentAirData) {
                 let color = '#333';
                 if (city.aqi <= 50) color = '#22c55e';
@@ -382,20 +408,11 @@
                 else if (city.aqi <= 150) color = '#f97316';
                 else if (city.aqi <= 200) color = '#ef4444';
                 else color = '#8b5cf6';
-                
-                html += `<tr>
-                    <td><strong>${city.name}</strong></td>
-                    <td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td>
-                    <td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td>
-                    <td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td>
-                    <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
-                </tr>`;
+                html += `<tr><td><strong>${city.name}</strong></td><td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td><td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td><td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td><td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td></tr>`;
             }
-            
-            html += `</tbody></table></div>`;
-            document.getElementById('airQualityTable').innerHTML = html;
+            document.getElementById('airQualityTable').innerHTML = html + `</tbody></table></div>`;
         }
-        
+
         function updateAirMap() {
             if (map) map.remove();
             map = L.map('airMap').setView([23.8859, 45.0792], 6);
@@ -410,38 +427,28 @@
                 }
             }
         }
-        
+
         function updateRankingChart() {
             const ctx = document.getElementById('rankingChart')?.getContext('2d');
             if (!ctx || !currentAirData.length) return;
             const sorted = [...currentAirData].sort((a,b) => a.aqi - b.aqi);
-            new Chart(ctx, {
-                type: 'bar',
-                data: { labels: sorted.map(c => c.name), datasets: [{ label: 'AQI', data: sorted.map(c => c.aqi), backgroundColor: '#0d5c2e', borderRadius: 8 }] },
-                options: { responsive: true, scales: { y: { min: 0, max: 200 } } }
-            });
+            new Chart(ctx, { type: 'bar', data: { labels: sorted.map(c => c.name), datasets: [{ label: 'AQI', data: sorted.map(c => c.aqi), backgroundColor: '#0d5c2e', borderRadius: 8 }] }, options: { responsive: true, scales: { y: { min: 0, max: 200 } } } });
         }
-        
+
         function updateAvgAqi() {
             if (!currentAirData.length) return;
             const avg = Math.round(currentAirData.reduce((s,c) => s + c.aqi, 0) / currentAirData.length);
             document.getElementById('avgAqi').innerHTML = avg;
             document.getElementById('updateTime').innerHTML = new Date().toLocaleString('ar-SA');
             document.getElementById('totalStations').innerHTML = stations.length;
-            document.getElementById('agriculturalArea').innerHTML = '1.7';
+            document.getElementById('totalEnergyProjects').innerHTML = energyProjects.length;
         }
-        
+
         function updateRecommendations() {
             const best = [...currentAirData].sort((a,b) => a.aqi - b.aqi)[0];
-            document.getElementById('investmentRecommendations').innerHTML = `
-                <div class="investor-card">
-                    <p>✅ أفضل مدينة للاستثمار: ${best?.name} (AQI ${best?.aqi})</p>
-                    <p>🚛 ${stations.length} محطة نفايات</p>
-                    <p>🌾 1.7 مليون هكتار أراضٍ زراعية</p>
-                    <p>💧 800 مليون م³ مياه معالجة سنوياً</p>
-                </div>`;
+            document.getElementById('investmentRecommendations').innerHTML = `<div class="investor-card"><p>✅ أفضل مدينة للاستثمار: ${best?.name} (AQI ${best?.aqi})</p><p>🚛 ${stations.length} محطة نفايات</p><p>🔋 ${energyProjects.length} مشروع طاقة متجددة</p><p>🌾 1.7 مليون هكتار أراضٍ زراعية</p></div>`;
         }
-        
+
         // محطات النفايات
         function displayStationsTable() {
             const byCity = {};
@@ -450,15 +457,14 @@
             for (let city in byCity) summary += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
             summary += '</ul>';
             document.getElementById('stationsSummary').innerHTML = summary;
-            
-            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `<div class="table-wrapper">` + `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
             stations.forEach(s => {
                 let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
                 html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
             });
             document.getElementById('stationsTable').innerHTML = html + `</tbody></table></div>`;
         }
-        
+
         function showStationsOnMap() {
             const container = document.getElementById('stationsMap');
             container.style.display = 'block';
@@ -466,11 +472,9 @@
             if (stationsMap) stationsMap.remove();
             stationsMap = L.map('stationsMap').setView([23.8859, 45.0792], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(stationsMap);
-            stations.forEach(s => {
-                L.marker([s.lat, s.lon]).bindPopup(`<b>${s.name}</b><br>${s.city}`).addTo(stationsMap);
-            });
+            stations.forEach(s => { L.marker([s.lat, s.lon]).bindPopup(`<b>${s.name}</b><br>${s.city}`).addTo(stationsMap); });
         }
-        
+
         function exportStationsData() {
             let csv = "ID,Name,City,Status,Lat,Long\n";
             stations.forEach(s => csv += `${s.id},${s.name},${s.city},${s.status},${s.lat},${s.lon}\n`);
@@ -479,12 +483,12 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'stations.csv';
             link.click();
-            alert('✅ تم تصدير البيانات');
+            alert('✅ تم تصدير بيانات المحطات');
         }
-        
-        // المياه والطاقة
+
+        // المياه
         function displayWaterTable() {
-            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
+            let html = `<div class="table-wrapper">` + `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
                 <tr><td>تحلية المياه</td><td>2,100</td><td>48%</td></tr>
                 <tr><td>المياه الجوفية</td><td>1,200</td><td>27%</td></tr>
                 <tr><td>مياه معالجة</td><td>800</td><td>18%</td></tr>
@@ -493,18 +497,57 @@
             document.getElementById('waterTable').innerHTML = html;
             new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
         }
-        
-        function displayEnergyTable() {
-            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>الطاقة الشمسية</td><td>28</td><td>16%</td></tr>
-                <tr><td>طاقة الرياح</td><td>16</td><td>9%</td></tr>
-                <tr><td>الهيدروجين الأخضر</td><td>15</td><td>8%</td></tr>
-                <tr><td>الوقود الأحفوري</td><td>120</td><td>67%</td></tr>
-            </tbody></table></div>`;
-            document.getElementById('energyTable').innerHTML = html;
-            new Chart(document.getElementById('energyMixChart'), { type: 'bar', data: { labels: ['شمسية', 'رياح', 'هيدروجين', 'أحفوري'], datasets: [{ label: 'جيجاواط', data: [28, 16, 15, 120], backgroundColor: '#eab308', borderRadius: 8 }] } });
+
+        // الطاقة المتجددة
+        function displayEnergyProjects() {
+            const installed = energyProjects.filter(p => p.status === "Installed").length;
+            const signed = energyProjects.filter(p => p.status === "PPA Signed").length;
+            const tendered = energyProjects.filter(p => p.status === "Tendered").length;
+            const solar = energyProjects.filter(p => p.type === "Solar").length;
+            const wind = energyProjects.filter(p => p.type === "Wind").length;
+            document.getElementById('installedCount').innerHTML = installed;
+            document.getElementById('signedCount').innerHTML = signed;
+            document.getElementById('tenderedCount').innerHTML = tendered;
+            document.getElementById('solarCount').innerHTML = solar;
+            document.getElementById('windCount').innerHTML = wind;
+            const top3 = [...energyProjects].sort((a,b) => b.capacity - a.capacity).slice(0,3);
+            let topHtml = '<ol>';
+            top3.forEach(p => { topHtml += `<li><strong>${p.name}</strong> - ${p.capacity} GW (${p.type})</li>`; });
+            topHtml += '</ol>';
+            document.getElementById('topProjects').innerHTML = topHtml;
+            let tableHtml = `<div class="table-wrapper">` + `<table><thead><tr><th>#</th><th>المشروع</th><th>النوع</th><th>السعة (GW)</th><th>السنة</th><th>الحالة</th><th>المطور</th></tr></thead><tbody>`;
+            energyProjects.forEach(p => {
+                let statusClass = p.status === 'Installed' ? '🟢' : (p.status === 'PPA Signed' ? '🟡' : '🔵');
+                tableHtml += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td><td>${p.capacity}</td><td>${p.year}</td><td>${statusClass} ${p.status}</td><td>${p.developer}</td></tr>`;
+            });
+            document.getElementById('energyProjectsTable').innerHTML = tableHtml + `</tbody></table></div>`;
         }
-        
+
+        function showEnergyProjectsMap() {
+            const container = document.getElementById('energyProjectsMap');
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth' });
+            if (energyMap) energyMap.remove();
+            energyMap = L.map('energyProjectsMap').setView([23.8859, 45.0792], 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(energyMap);
+            energyProjects.forEach(p => {
+                let markerColor = p.status === 'Installed' ? 'green' : (p.status === 'PPA Signed' ? 'orange' : 'blue');
+                L.circleMarker([p.lat, p.lon], { radius: Math.min(15, p.capacity * 3), fillColor: markerColor, color: 'white', weight: 1, fillOpacity: 0.7 })
+                    .bindPopup(`<b>${p.name}</b><br>⚡ ${p.capacity} GW<br>📅 ${p.year}<br>📌 ${p.status}<br>👨‍💻 ${p.developer}`).addTo(energyMap);
+            });
+        }
+
+        function exportEnergyProjects() {
+            let csv = "ID,Project,Type,Capacity_GW,Year,Status,Developer,Region,Lat,Lon\n";
+            energyProjects.forEach(p => { csv += `${p.id},${p.name},${p.type},${p.capacity},${p.year},${p.status},${p.developer},${p.region},${p.lat},${p.lon}\n`; });
+            const blob = new Blob([csv], {type: 'text/csv'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'saudi_renewable_energy_projects.csv';
+            link.click();
+            alert('✅ تم تصدير بيانات مشاريع الطاقة');
+        }
+
         // الزراعة
         function initAgricultureMap() {
             const container = document.getElementById('agricultureMap');
@@ -520,19 +563,12 @@
                 { name: 'منطقة جازان', lat: 16.8894, lon: 42.5559, info: '150,000 هكتار - بن، مانجو' },
                 { name: 'منطقة عسير', lat: 18.2164, lon: 42.5053, info: '180,000 هكتار - قمح، فواكه' }
             ];
-            areas.forEach(a => {
-                L.circleMarker([a.lat, a.lon], { radius: 18, fillColor: '#22c55e', color: 'white', weight: 2, fillOpacity: 0.7 })
-                    .bindPopup(`<b>${a.name}</b><br>${a.info}`).addTo(agricultureMap);
-            });
+            areas.forEach(a => { L.circleMarker([a.lat, a.lon], { radius: 18, fillColor: '#22c55e', color: 'white', weight: 2, fillOpacity: 0.7 }).bindPopup(`<b>${a.name}</b><br>${a.info}`).addTo(agricultureMap); });
         }
-        
+
+        // تقارير
         function downloadFullReport() {
-            let report = "التقرير البيئي الشامل - EcoData Saudi\n";
-            report += "=".repeat(40) + "\n\n";
-            report += "جودة الهواء:\n";
-            currentAirData.forEach(c => report += `${c.name}: AQI ${c.aqi} (${c.status.text})\n`);
-            report += `\nمحطات النفايات: ${stations.length} محطة\n`;
-            report += `الأراضي الزراعية: 1.7 مليون هكتار\n`;
+            let report = "التقرير الشامل - EcoData Saudi\n" + "=".repeat(40) + "\n\nجودة الهواء:\n" + currentAirData.map(c => `${c.name}: AQI ${c.aqi} (${c.status.text})`).join('\n') + `\n\nمحطات النفايات: ${stations.length} محطة\nمشاريع الطاقة: ${energyProjects.length} مشروع\nالأراضي الزراعية: 1.7 مليون هكتار`;
             const blob = new Blob([report], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -540,14 +576,15 @@
             link.click();
             alert('✅ تم تحميل التقرير');
         }
-        
+
         function shareReport() {
             const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi}) | ${stations.length} محطة نفايات | 1.7M هكتار أراضٍ زراعية`;
+            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi}) | ${stations.length} محطة نفايات | ${energyProjects.length} مشروع طاقة متجددة`;
             if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
             else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
         }
-        
+
+        // التبويبات
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -555,13 +592,15 @@
             event.target.classList.add('active');
             if (tabId === 'agriculture-tab') setTimeout(() => initAgricultureMap(), 200);
         }
-        
+
+        // النشرة البريدية
         document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             alert('✅ شكراً للاشتراك في النشرة البريدية');
             this.reset();
         });
-        
+
+        // تحميل البيانات
         async function fetchAllData() {
             const spinner = document.createElement('div');
             spinner.className = 'spinner';
@@ -570,10 +609,10 @@
             await fetchAirQuality();
             displayStationsTable();
             displayWaterTable();
-            displayEnergyTable();
+            displayEnergyProjects();
             spinner.remove();
         }
-        
+
         fetchAllData();
         setInterval(fetchAllData, 3600000);
     </script>
