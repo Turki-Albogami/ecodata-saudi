@@ -84,7 +84,7 @@
     <header>
         <div class="container">
             <h1>🌿 EcoData Saudi <span>المنصة البيئية والزراعية المتكاملة</span></h1>
-            <p>جودة الهواء | محطات النفايات | المياه | الطاقة المتجددة (53 مشروعاً) | الزراعة</p>
+            <p>جودة الهواء | محطات النفايات | المياه (652 سطحية + 1125 جوفية) | الطاقة المتجددة (53 مشروعاً) | الزراعة</p>
             <div class="last-update">
                 آخر تحديث: <span id="updateTime">جاري التحميل...</span>
                 <button class="refresh-btn" onclick="fetchAllData()">🔄 تحديث الآن</button>
@@ -98,12 +98,12 @@
             <div class="stats-grid">
                 <div class="stat-card card-green"><h3 id="avgAqi">0</h3><p>متوسط AQI</p><small>جودة الهواء</small></div>
                 <div class="stat-card card-dark"><h3 id="totalStations">0</h3><p>محطة نقل نفايات</p><small>إدارة النفايات</small></div>
-                <div class="stat-card card-blue"><h3 id="totalEnergyProjects">0</h3><p>مشروع طاقة متجددة</p><small>53 مشروعاً في السعودية</small></div>
-                <div class="stat-card card-yellow"><h3>35%</h3><p>إعادة استخدام</p><small>المياه المعالجة</small></div>
+                <div class="stat-card card-blue"><h3 id="totalWaterSites">1777</h3><p>موقع رصد مياه</p><small>652 سطحية + 1125 جوفية</small></div>
+                <div class="stat-card card-yellow"><h3 id="totalEnergyProjects">0</h3><p>مشروع طاقة متجددة</p><small>53 مشروعاً</small></div>
                 <div class="stat-card card-red"><h3>50%</h3><p>طاقة متجددة</p><small>هدف 2030</small></div>
             </div>
             <div class="investor-card">
-                <strong>📌 منظومة متكاملة:</strong> نغطي 5 قطاعات بيئية رئيسية (هواء، نفايات، مياه، طاقة، زراعة) ببيانات حية ومحللة لدعم المستثمرين واتخاذ القرارات المستدامة.
+                <strong>📌 منظومة متكاملة:</strong> نغطي 5 قطاعات بيئية رئيسية (هواء، نفايات، مياه، طاقة، زراعة) ببيانات حقيقية ومحللة لدعم المستثمرين واتخاذ القرارات المستدامة.
             </div>
         </section>
 
@@ -148,14 +148,27 @@
             </section>
         </div>
 
-        <!-- تبويب المياه -->
+        <!-- تبويب المياه - مع البيانات الحقيقية -->
         <div id="water-tab" class="tab-content">
             <section>
-                <h2>💧 الموارد المائية وإعادة الاستخدام</h2>
+                <h2>💧 شبكة رصد المياه في المملكة (البيانات الحقيقية)</h2>
+                <div class="investor-card" style="background: linear-gradient(135deg, #1e293b, #2d3a4e); color: white;">
+                    <h3 style="color: white;">📊 إجمالي مواقع الرصد</h3>
+                    <p><strong>🌊 المياه السطحية:</strong> 652 موقعاً | <strong>💧 المياه الجوفية:</strong> 1,125 موقعاً | <strong>📌 الإجمالي:</strong> 1,777 موقع رصد</p>
+                    <p>📅 فترة القياس: 2024-2025 | المصدر: وزارة البيئة والمياه والزراعة</p>
+                </div>
                 <div id="waterTable"></div>
                 <div class="two-columns" style="margin-top:20px">
-                    <div><h3>مصادر المياه</h3><canvas id="waterSourceChart"></canvas></div>
-                    <div class="investor-card"><h3>💡 فرص استثمارية</h3><ul><li>✅ تحلية المياه بالطاقة الشمسية</li><li>✅ محطات معالجة متقدمة</li><li>✅ أنظمة ري ذكية للزراعة</li></ul></div>
+                    <div><h3>توزيع مواقع الرصد حسب المناطق</h3><canvas id="waterBarChart"></canvas></div>
+                    <div class="investor-card">
+                        <h3>💡 تحليل استثماري</h3>
+                        <ul>
+                            <li>✅ <strong>منطقة الرياض</strong>: الأعلى في المياه السطحية (198 موقعاً)</li>
+                            <li>✅ <strong>منطقة مكة المكرمة</strong>: الأعلى في المياه الجوفية (283 موقعاً)</li>
+                            <li>✅ فرص استثمارية في محطات معالجة المياه</li>
+                            <li>✅ أنظمة ري ذكية للمناطق الزراعية</li>
+                        </ul>
+                    </div>
                 </div>
             </section>
         </div>
@@ -217,7 +230,7 @@
             <section>
                 <h2>📊 تقارير وتحليلات استثمارية</h2>
                 <div class="two-columns">
-                    <div><h3>ترتيب المدن حسب النقاء</h3><canvas id="rankingChart"></canvas></div>
+                    <div><h3>ترتيب المدن حسب جودة الهواء</h3><canvas id="rankingChart"></canvas></div>
                     <div><h3>🎯 توصيات استثمارية</h3><div id="investmentRecommendations" style="background:#f1f5f9; padding:20px; border-radius:15px;"></div></div>
                 </div>
                 <div style="text-align:center; margin-top:20px">
@@ -240,7 +253,7 @@
     <footer>
         <div class="container">
             <p>© 2025 EcoData Saudi - المنصة البيئية والزراعية المتكاملة</p>
-            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات | الطاقة: وزارة الطاقة (53 مشروعاً)</p>
+            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات | المياه: وزارة البيئة (652 سطحية + 1125 جوفية) | الطاقة: 53 مشروعاً حقيقياً</p>
         </div>
     </footer>
 
@@ -333,6 +346,23 @@
             { id: 53, name: "Al-Leeth", type: "Solar", capacity: 3.0, year: 2029, status: "Tendered", region: "Makkah", city: "Al-Leeth", lat: 20.1428, lon: 40.2720, developer: "TBA" }
         ];
 
+        // ==================== بيانات المياه الحقيقية (من ملفك) ====================
+        const waterData = [
+            { region: "الباحة", surface: 38, groundwater: 75, total: 113 },
+            { region: "الجوف", surface: 8, groundwater: 104, total: 112 },
+            { region: "القصيم", surface: 58, groundwater: 60, total: 118 },
+            { region: "عسير", surface: 74, groundwater: 156, total: 230 },
+            { region: "المنطقة الشرقية", surface: 19, groundwater: 74, total: 93 },
+            { region: "حائل", surface: 18, groundwater: 34, total: 52 },
+            { region: "جازان", surface: 51, groundwater: 73, total: 124 },
+            { region: "المدينة المنورة", surface: 50, groundwater: 123, total: 173 },
+            { region: "مكة المكرمة", surface: 107, groundwater: 283, total: 390 },
+            { region: "نجران", surface: 20, groundwater: 21, total: 41 },
+            { region: "الحدود الشمالية", surface: 6, groundwater: 18, total: 24 },
+            { region: "الرياض", surface: 198, groundwater: 61, total: 259 },
+            { region: "تبوك", surface: 5, groundwater: 43, total: 48 }
+        ];
+
         // ==================== بيانات عامة ====================
         let currentAirData = [];
         let map = null, agricultureMap = null, stationsMap = null, energyMap = null;
@@ -399,23 +429,8 @@
             updateRecommendations();
         }
 
-        // دالة عرض جدول جودة الهواء بشكل مرتب (تم إصلاحها)
         function displayAirTable() {
-            let html = `
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>المدينة</th>
-                                <th>AQI</th>
-                                <th>PM2.5</th>
-                                <th>PM10</th>
-                                <th>الحالة</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-            
+            let html = `<div class="table-wrapper">` + `<table><thead>运转<th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></tr></thead><tbody>`;
             for (const city of currentAirData) {
                 let color = '#333';
                 if (city.aqi <= 50) color = '#22c55e';
@@ -423,28 +438,15 @@
                 else if (city.aqi <= 150) color = '#f97316';
                 else if (city.aqi <= 200) color = '#ef4444';
                 else color = '#8b5cf6';
-                
-                let pm25Text = (city.pm25 !== null && city.pm25 !== undefined) ? city.pm25 + ' µg/m³' : '—';
-                let pm10Text = (city.pm10 !== null && city.pm10 !== undefined) ? city.pm10 + ' µg/m³' : '—';
-                
-                html += `
-                    <tr>
-                        <td><strong>${city.name}</strong></td>
-                        <td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td>
-                        <td>${pm25Text}</td>
-                        <td>${pm10Text}</td>
-                        <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
-                    </tr>
-                `;
+                html += `<tr>
+                    <td><strong>${city.name}</strong></td>
+                    <td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td>
+                    <td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td>
+                    <td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td>
+                    <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
+                </tr>`;
             }
-            
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            
-            document.getElementById('airQualityTable').innerHTML = html;
+            document.getElementById('airQualityTable').innerHTML = html + `</tbody></table></div>`;
         }
 
         function updateAirMap() {
@@ -480,7 +482,14 @@
 
         function updateRecommendations() {
             const best = [...currentAirData].sort((a,b) => a.aqi - b.aqi)[0];
-            document.getElementById('investmentRecommendations').innerHTML = `<div class="investor-card"><p>✅ أفضل مدينة للاستثمار: ${best?.name} (AQI ${best?.aqi})</p><p>🚛 ${stations.length} محطة نفايات</p><p>🔋 ${energyProjects.length} مشروع طاقة متجددة</p><p>🌾 1.7 مليون هكتار أراضٍ زراعية</p></div>`;
+            const topWaterRegion = [...waterData].sort((a,b) => b.total - a.total)[0];
+            document.getElementById('investmentRecommendations').innerHTML = `<div class="investor-card">
+                <p>✅ أفضل مدينة للاستثمار السياحي: ${best?.name} (AQI ${best?.aqi})</p>
+                <p>🚛 ${stations.length} محطة نفايات قابلة للاستثمار</p>
+                <p>🔋 ${energyProjects.length} مشروع طاقة متجددة (53 مشروعاً)</p>
+                <p>💧 أغنى منطقة بالموارد المائية: ${topWaterRegion?.region} (${topWaterRegion?.total} موقع رصد)</p>
+                <p>🌾 1.7 مليون هكتار أراضٍ زراعية</p>
+            </div>`;
         }
 
         // محطات النفايات
@@ -491,7 +500,7 @@
             for (let city in byCity) summary += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
             summary += '</ul>';
             document.getElementById('stationsSummary').innerHTML = summary;
-            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th><tr></thead><tbody>`;
             stations.forEach(s => {
                 let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
                 html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
@@ -520,16 +529,35 @@
             alert('✅ تم تصدير بيانات المحطات');
         }
 
-        // المياه
+        // المياه - عرض الجدول والرسم البياني
         function displayWaterTable() {
-            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>تحلية المياه</td><td>2,100</td><td>48%</td></tr>
-                <tr><td>المياه الجوفية</td><td>1,200</td><td>27%</td></tr>
-                <tr><td>مياه معالجة</td><td>800</td><td>18%</td></tr>
-                <tr><td>المياه السطحية</td><td>300</td><td>7%</td></tr>
-            </tbody></table></div>`;
+            let html = `<div class="table-wrapper"><tr><thead>运转<th>المنطقة</th><th>مواقع المياه السطحية</th><th>مواقع المياه الجوفية</th><th>الإجمالي</th></tr></thead><tbody>`;
+            waterData.forEach(w => {
+                html += `<tr>
+                    <td><strong>${w.region}</strong></td>
+                    <td>${w.surface} موقع</span></td>
+                    <td>${w.groundwater} موقع</span></td>
+                    <td>${w.total} موقع</span></td>
+                </tr>`;
+            });
+            html += `</tbody></table></div>`;
             document.getElementById('waterTable').innerHTML = html;
-            new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
+            
+            // رسم بياني للمياه
+            const ctx = document.getElementById('waterBarChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: waterData.map(w => w.region),
+                        datasets: [
+                            { label: 'المياه السطحية', data: waterData.map(w => w.surface), backgroundColor: '#3b82f6', borderRadius: 8 },
+                            { label: 'المياه الجوفية', data: waterData.map(w => w.groundwater), backgroundColor: '#22c55e', borderRadius: 8 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, title: { display: true, text: 'عدد المواقع' } } } }
+                });
+            }
         }
 
         // الطاقة المتجددة
@@ -552,7 +580,15 @@
             let tableHtml = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>المشروع</th><th>النوع</th><th>السعة (GW)</th><th>السنة</th><th>الحالة</th><th>المطور</th></tr></thead><tbody>`;
             energyProjects.forEach(p => {
                 let statusClass = p.status === 'Installed' ? '🟢' : (p.status === 'PPA Signed' ? '🟡' : '🔵');
-                tableHtml += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td><td>${p.capacity}</td><td>${p.year}</td><td>${statusClass} ${p.status}</td><td>${p.developer}</td></tr>`;
+                tableHtml += `<tr>
+                    <td style="padding: 8px;">${p.id}</td>
+                    <td style="padding: 8px;">${p.name}</td>
+                    <td style="padding: 8px;">${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td>
+                    <td style="padding: 8px;">${p.capacity}</td>
+                    <td style="padding: 8px;">${p.year}</td>
+                    <td style="padding: 8px;">${statusClass} ${p.status}</td>
+                    <td style="padding: 8px;">${p.developer}</td>
+                </tr>`;
             });
             document.getElementById('energyProjectsTable').innerHTML = tableHtml + `</tbody></table></div>`;
         }
@@ -602,7 +638,12 @@
 
         // تقارير
         function downloadFullReport() {
-            let report = "التقرير الشامل - EcoData Saudi\n" + "=".repeat(40) + "\n\nجودة الهواء:\n" + currentAirData.map(c => `${c.name}: AQI ${c.aqi} (${c.status.text})`).join('\n') + `\n\nمحطات النفايات: ${stations.length} محطة\nمشاريع الطاقة: ${energyProjects.length} مشروع\nالأراضي الزراعية: 1.7 مليون هكتار`;
+            let report = "التقرير الشامل - EcoData Saudi\n" + "=".repeat(40) + "\n\nجودة الهواء:\n" + currentAirData.map(c => `${c.name}: AQI ${c.aqi} (${c.status.text})`).join('\n');
+            report += `\n\nمحطات النفايات: ${stations.length} محطة`;
+            report += `\n\nموارد المياه:\nإجمالي مواقع الرصد: 1,777 موقعاً (652 سطحية + 1,125 جوفية)`;
+            report += `\nأغنى منطقة: ${[...waterData].sort((a,b) => b.total - a.total)[0]?.region}`;
+            report += `\n\nمشاريع الطاقة المتجددة: ${energyProjects.length} مشروعاً (أكبرها: ${[...energyProjects].sort((a,b) => b.capacity - a.capacity)[0]?.name} بقدرة ${[...energyProjects].sort((a,b) => b.capacity - a.capacity)[0]?.capacity} GW)`;
+            report += `\n\nالأراضي الزراعية: 1.7 مليون هكتار`;
             const blob = new Blob([report], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -613,7 +654,8 @@
 
         function shareReport() {
             const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi}) | ${stations.length} محطة نفايات | ${energyProjects.length} مشروع طاقة متجددة`;
+            const topWater = [...waterData].sort((a,b) => b.total - a.total)[0];
+            const text = `🌿 EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi}) | 💧 ${topWater?.region} الأغنى بالمياه (${topWater?.total} موقع) | 🔋 53 مشروع طاقة متجددة | 🚛 27 محطة نفايات`;
             if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
             else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
         }
