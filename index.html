@@ -31,19 +31,22 @@
         .card-red { background: linear-gradient(135deg,#ef4444,#dc2626); color: white; }
         .card-blue { background: linear-gradient(135deg,#3b82f6,#2563eb); color: white; }
         
-        /* ========== تحسين شكل الجدول ========== */
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        /* ========== تنسيق الجدول المحسن ========== */
+        .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; font-size: 15px; text-align: center; background: white; }
         th, td { padding: 14px 12px; text-align: center; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
         th { background: #0d5c2e; color: white; font-weight: bold; font-size: 16px; }
         tr { transition: background 0.2s; }
         tr:hover { background: #f8fafc; }
         
-        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: bold; }
+        .status-badge { display: inline-block; padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: bold; min-width: 100px; }
         .status-good { background: #22c55e; color: white; }
         .status-moderate { background: #eab308; color: white; }
         .status-unhealthy { background: #f97316; color: white; }
         .status-very-unhealthy { background: #ef4444; color: white; }
         .status-hazardous { background: #8b5cf6; color: white; }
+        
+        .aqi-value { font-size: 26px; font-weight: bold; }
         
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
         .tab-btn { background: #e2e8f0; border: none; padding: 12px 24px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
@@ -67,8 +70,12 @@
         @media (max-width: 768px) { 
             .two-columns, .three-columns { grid-template-columns: 1fr; } 
             .stats-grid { grid-template-columns: repeat(2,1fr); }
-            th, td { padding: 10px 8px; font-size: 12px; }
+            th, td { padding: 10px 6px; font-size: 12px; }
+            .aqi-value { font-size: 18px; }
+            .status-badge { padding: 4px 8px; font-size: 11px; min-width: auto; }
         }
+        
+        .loading { text-align: center; padding: 40px; font-size: 18px; color: #0d5c2e; }
         
         @keyframes spin { to { transform: rotate(360deg); } }
         .spinner { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2); z-index:9999; text-align:center; }
@@ -115,7 +122,7 @@
         <div id="air-tab" class="tab-content active">
             <section>
                 <h2>📈 مؤشرات جودة الهواء لحظياً</h2>
-                <div id="airQualityTable"><div class="loading">⏳ جاري تحميل البيانات...</div></div>
+                <div id="airQualityTable"><div class="loading">⏳ جاري تحميل بيانات جودة الهواء...</div></div>
             </section>
             <section>
                 <h2>🗺️ خريطة جودة الهواء</h2>
@@ -263,33 +270,33 @@
         
         // بيانات محطات نقل النفايات
         const stations = [
-            { id: "TS1", name: "Al Janadriyyah", city: "Riyadh", lat: 21.62699, lon: 46.08904, status: "Unconfirmed" },
-            { id: "TS2", name: "Al Shmal & Maathar", city: "Riyadh", lat: 25.15213, lon: 46.83394, status: "Unconfirmed" },
-            { id: "TS3", name: "Al Uraija", city: "Riyadh", lat: 24.85331, lon: 46.57790, status: "Unconfirmed" },
-            { id: "TS4", name: "Shifa", city: "Riyadh", lat: 24.87694, lon: 46.57308, status: "Unconfirmed" },
-            { id: "TS5", name: "Breman", city: "Jeddah", lat: 21.47637, lon: 39.29760, status: "Unconfirmed" },
-            { id: "TS6", name: "Dammam East", city: "Dammam", lat: 21.47778, lon: 50.13859, status: "Unconfirmed" },
-            { id: "TS7", name: "Dammam North", city: "Dammam", lat: 26.41305, lon: 50.04538, status: "Unconfirmed" },
-            { id: "TS8", name: "Dammam West", city: "Dammam", lat: 26.44898, lon: 50.00007, status: "Unconfirmed" },
-            { id: "TS9", name: "Dammam South", city: "Dammam", lat: 26.39683, lon: 50.10242, status: "Unconfirmed" },
-            { id: "TS10", name: "Qatif", city: "Dammam", lat: 26.23264, lon: 49.92467, status: "Unconfirmed" },
-            { id: "TS11", name: "Dhahban/Asfan", city: "Riyadh", lat: 26.53540, lon: 46.72513, status: "Unconfirmed" },
-            { id: "TS12", name: "Airport 2", city: "Jeddah", lat: 21.84216, lon: 39.20079, status: "Unconfirmed" },
-            { id: "TS13", name: "Airport 1", city: "Jeddah", lat: 21.60812, lon: 39.15333, status: "Unconfirmed" },
-            { id: "TS14", name: "Alnakheel", city: "Jeddah", lat: 21.62699, lon: 39.19740, status: "Unconfirmed" },
-            { id: "TS15", name: "Kuzam", city: "Jeddah", lat: 21.63178, lon: 39.20323, status: "Unconfirmed" },
-            { id: "TS16", name: "Salam", city: "Jeddah", lat: 21.52978, lon: 39.25409, status: "Unconfirmed" },
-            { id: "TS17", name: "Aljawharah", city: "Jeddah", lat: 21.44634, lon: 39.19254, status: "Unconfirmed" },
-            { id: "TS18", name: "Bahra", city: "Jeddah", lat: 21.43531, lon: 39.25499, status: "Closed" },
-            { id: "TS19", name: "Al Jumum", city: "Jeddah", lat: 21.59884, lon: 39.24617, status: "Seasonal" },
-            { id: "TS20", name: "Huraymila", city: "Makkah", lat: 21.44209, lon: 39.80745, status: "Unconfirmed" },
-            { id: "TS21", name: "Salama", city: "Makkah", lat: 26.44332, lon: 39.88847, status: "Unconfirmed" },
-            { id: "TS22", name: "Al Kakiyyah", city: "Makkah", lat: 21.59884, lon: 39.56566, status: "Seasonal" },
-            { id: "TS23", name: "Alaziziyyah", city: "Makkah", lat: 21.36728, lon: 39.68627, status: "Seasonal" },
-            { id: "TS24", name: "Muzdalifah", city: "Makkah", lat: 21.38547, lon: 39.93731, status: "Seasonal" },
-            { id: "TS25", name: "Arafat", city: "Makkah", lat: 21.46143, lon: 39.98983, status: "Seasonal" },
-            { id: "TS26", name: "Al-Ma'isam", city: "Makkah", lat: 21.59703, lon: 39.90480, status: "Seasonal" },
-            { id: "TS27", name: "Buraydah", city: "Al Qassim", lat: 21.35508, lon: 43.97081, status: "Unconfirmed" }
+            { id: "TS1", name: "Al Janadriyyah", city: "الرياض", lat: 21.62699, lon: 46.08904, status: "Unconfirmed" },
+            { id: "TS2", name: "Al Shmal & Maathar", city: "الرياض", lat: 25.15213, lon: 46.83394, status: "Unconfirmed" },
+            { id: "TS3", name: "Al Uraija", city: "الرياض", lat: 24.85331, lon: 46.57790, status: "Unconfirmed" },
+            { id: "TS4", name: "Shifa", city: "الرياض", lat: 24.87694, lon: 46.57308, status: "Unconfirmed" },
+            { id: "TS5", name: "Breman", city: "جدة", lat: 21.47637, lon: 39.29760, status: "Unconfirmed" },
+            { id: "TS6", name: "Dammam East", city: "الدمام", lat: 21.47778, lon: 50.13859, status: "Unconfirmed" },
+            { id: "TS7", name: "Dammam North", city: "الدمام", lat: 26.41305, lon: 50.04538, status: "Unconfirmed" },
+            { id: "TS8", name: "Dammam West", city: "الدمام", lat: 26.44898, lon: 50.00007, status: "Unconfirmed" },
+            { id: "TS9", name: "Dammam South", city: "الدمام", lat: 26.39683, lon: 50.10242, status: "Unconfirmed" },
+            { id: "TS10", name: "Qatif", city: "الدمام", lat: 26.23264, lon: 49.92467, status: "Unconfirmed" },
+            { id: "TS11", name: "Dhahban/Asfan", city: "الرياض", lat: 26.53540, lon: 46.72513, status: "Unconfirmed" },
+            { id: "TS12", name: "Airport 2", city: "جدة", lat: 21.84216, lon: 39.20079, status: "Unconfirmed" },
+            { id: "TS13", name: "Airport 1", city: "جدة", lat: 21.60812, lon: 39.15333, status: "Unconfirmed" },
+            { id: "TS14", name: "Alnakheel", city: "جدة", lat: 21.62699, lon: 39.19740, status: "Unconfirmed" },
+            { id: "TS15", name: "Kuzam", city: "جدة", lat: 21.63178, lon: 39.20323, status: "Unconfirmed" },
+            { id: "TS16", name: "Salam", city: "جدة", lat: 21.52978, lon: 39.25409, status: "Unconfirmed" },
+            { id: "TS17", name: "Aljawharah", city: "جدة", lat: 21.44634, lon: 39.19254, status: "Unconfirmed" },
+            { id: "TS18", name: "Bahra", city: "جدة", lat: 21.43531, lon: 39.25499, status: "Closed" },
+            { id: "TS19", name: "Al Jumum", city: "جدة", lat: 21.59884, lon: 39.24617, status: "Seasonal" },
+            { id: "TS20", name: "Huraymila", city: "مكة", lat: 21.44209, lon: 39.80745, status: "Unconfirmed" },
+            { id: "TS21", name: "Salama", city: "مكة", lat: 26.44332, lon: 39.88847, status: "Unconfirmed" },
+            { id: "TS22", name: "Al Kakiyyah", city: "مكة", lat: 21.59884, lon: 39.56566, status: "Seasonal" },
+            { id: "TS23", name: "Alaziziyyah", city: "مكة", lat: 21.36728, lon: 39.68627, status: "Seasonal" },
+            { id: "TS24", name: "Muzdalifah", city: "مكة", lat: 21.38547, lon: 39.93731, status: "Seasonal" },
+            { id: "TS25", name: "Arafat", city: "مكة", lat: 21.46143, lon: 39.98983, status: "Seasonal" },
+            { id: "TS26", name: "Al-Ma'isam", city: "مكة", lat: 21.59703, lon: 39.90480, status: "Seasonal" },
+            { id: "TS27", name: "Buraydah", city: "القصيم", lat: 21.35508, lon: 43.97081, status: "Unconfirmed" }
         ];
         
         // المدن
@@ -304,7 +311,7 @@
             { name: 'حائل', lat: 27.5214, lon: 41.6907 }
         ];
         
-        // حساب AQI من PM2.5 حسب معايير EPA
+        // حساب AQI حسب معايير EPA
         function calculateAQI(pm25) {
             if (!pm25 || isNaN(pm25) || pm25 < 0) return 50;
             if (pm25 <= 12.0) return Math.round((50 / 12) * pm25);
@@ -344,7 +351,7 @@
                             });
                         }
                     }
-                } catch(e) { console.log('خطأ:', city.name, e); }
+                } catch(e) { console.log('خطأ:', city.name); }
                 await new Promise(r => setTimeout(r, 300));
             }
             currentAirData = results;
@@ -356,7 +363,18 @@
         }
         
         function displayAirTable() {
-            let html = `�<thead>运转<th>المدينة</th><th>AQI</th><th>PM2.5</th><th>PM10</th><th>الحالة</th></thead><tbody>`;
+            let html = `<div class="table-wrapper"><table>
+                <thead>
+                    <tr>
+                        <th>المدينة</th>
+                        <th>AQI</th>
+                        <th>PM2.5</th>
+                        <th>PM10</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
             for (const city of currentAirData) {
                 let color = '#333';
                 if (city.aqi <= 50) color = '#22c55e';
@@ -367,13 +385,15 @@
                 
                 html += `<tr>
                     <td><strong>${city.name}</strong></td>
-                    <td><span style="font-size:26px;font-weight:bold;color:${color}">${city.aqi}</span></td>
+                    <td><span class="aqi-value" style="color:${color}">${city.aqi}</span></td>
                     <td>${city.pm25 ? city.pm25 + ' µg/m³' : '—'}</td>
                     <td>${city.pm10 ? city.pm10 + ' µg/m³' : '—'}</td>
                     <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
                 </tr>`;
             }
-            document.getElementById('airQualityTable').innerHTML = html + `</tbody></table>`;
+            
+            html += `</tbody></table></div>`;
+            document.getElementById('airQualityTable').innerHTML = html;
         }
         
         function updateAirMap() {
@@ -418,6 +438,7 @@
                     <p>✅ أفضل مدينة للاستثمار: ${best?.name} (AQI ${best?.aqi})</p>
                     <p>🚛 ${stations.length} محطة نفايات</p>
                     <p>🌾 1.7 مليون هكتار أراضٍ زراعية</p>
+                    <p>💧 800 مليون م³ مياه معالجة سنوياً</p>
                 </div>`;
         }
         
@@ -430,12 +451,12 @@
             summary += '</ul>';
             document.getElementById('stationsSummary').innerHTML = summary;
             
-            let html = `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
             stations.forEach(s => {
                 let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
                 html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
             });
-            document.getElementById('stationsTable').innerHTML = html + `</tbody></table>`;
+            document.getElementById('stationsTable').innerHTML = html + `</tbody></table></div>`;
         }
         
         function showStationsOnMap() {
@@ -458,31 +479,28 @@
             link.href = URL.createObjectURL(blob);
             link.download = 'stations.csv';
             link.click();
-            alert('✅ تم التصدير');
+            alert('✅ تم تصدير البيانات');
         }
         
         // المياه والطاقة
-        const waterData = { desalination: 2100, groundwater: 1200, treatedWastewater: 800, surfaceWater: 300 };
-        const energyData = { solar: 28, wind: 16, greenHydrogen: 15, fossil: 120 };
-        
         function displayWaterTable() {
-            let html = `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>تحلية المياه</td><td>2100</span></td><td>${Math.round(2100/4400*100)}%</span></td>
-                <tr><td>المياه الجوفية</span></td><td>1200</span></td><td>${Math.round(1200/4400*100)}%</span></td>
-                <tr><td>مياه معالجة</span></td><td>800</span></td><td>${Math.round(800/4400*100)}%</span></td>
-                <tr><td>المياه السطحية</span></td><td>300</span></td><td>${Math.round(300/4400*100)}%</span></td>
-            </tbody></table>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
+                <tr><td>تحلية المياه</td><td>2,100</td><td>48%</td></tr>
+                <tr><td>المياه الجوفية</td><td>1,200</td><td>27%</td></tr>
+                <tr><td>مياه معالجة</td><td>800</td><td>18%</td></tr>
+                <tr><td>المياه السطحية</td><td>300</td><td>7%</td></tr>
+            </tbody></table></div>`;
             document.getElementById('waterTable').innerHTML = html;
             new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
         }
         
         function displayEnergyTable() {
-            let html = `<table><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>الطاقة الشمسية</span></td><td>28</span></td><td>${Math.round(28/179*100)}%</span></tr>
-                <tr><td>طاقة الرياح</span></td><td>16</span></td><td>${Math.round(16/179*100)}%</span></tr>
-                <tr><td>الهيدروجين الأخضر</span></td><td>15</span></td><td>${Math.round(15/179*100)}%</span></tr>
-                <tr><td>الوقود الأحفوري</span></td><td>120</span></td><td>${Math.round(120/179*100)}%</span></tr>
-            </tbody></table>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
+                <tr><td>الطاقة الشمسية</td><td>28</td><td>16%</td></tr>
+                <tr><td>طاقة الرياح</td><td>16</td><td>9%</td></tr>
+                <tr><td>الهيدروجين الأخضر</td><td>15</td><td>8%</td></tr>
+                <tr><td>الوقود الأحفوري</td><td>120</td><td>67%</td></tr>
+            </tbody></table></div>`;
             document.getElementById('energyTable').innerHTML = html;
             new Chart(document.getElementById('energyMixChart'), { type: 'bar', data: { labels: ['شمسية', 'رياح', 'هيدروجين', 'أحفوري'], datasets: [{ label: 'جيجاواط', data: [28, 16, 15, 120], backgroundColor: '#eab308', borderRadius: 8 }] } });
         }
@@ -495,12 +513,12 @@
             agricultureMap = L.map('agricultureMap').setView([23.8859, 45.0792], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(agricultureMap);
             const areas = [
-                { name: 'القصيم', lat: 26.3361, lon: 43.9641, info: '400,000 هكتار - تمور، حمضيات' },
-                { name: 'تبوك', lat: 28.3835, lon: 36.5552, info: '250,000 هكتار - ورود، فواكه' },
-                { name: 'حائل', lat: 27.5214, lon: 41.6907, info: '200,000 هكتار - قمح، تمور' },
+                { name: 'منطقة القصيم', lat: 26.3361, lon: 43.9641, info: '400,000 هكتار - تمور، حمضيات' },
+                { name: 'منطقة تبوك', lat: 28.3835, lon: 36.5552, info: '250,000 هكتار - ورود، فواكه' },
+                { name: 'منطقة حائل', lat: 27.5214, lon: 41.6907, info: '200,000 هكتار - قمح، تمور' },
                 { name: 'وادي الدواسر', lat: 20.4667, lon: 44.9167, info: '300,000 هكتار - قمح، خضروات' },
-                { name: 'جازان', lat: 16.8894, lon: 42.5559, info: '150,000 هكتار - بن، مانجو' },
-                { name: 'عسير', lat: 18.2164, lon: 42.5053, info: '180,000 هكتار - قمح، فواكه' }
+                { name: 'منطقة جازان', lat: 16.8894, lon: 42.5559, info: '150,000 هكتار - بن، مانجو' },
+                { name: 'منطقة عسير', lat: 18.2164, lon: 42.5053, info: '180,000 هكتار - قمح، فواكه' }
             ];
             areas.forEach(a => {
                 L.circleMarker([a.lat, a.lon], { radius: 18, fillColor: '#22c55e', color: 'white', weight: 2, fillOpacity: 0.7 })
@@ -509,20 +527,25 @@
         }
         
         function downloadFullReport() {
-            let report = "التقرير البيئي الشامل\n" + currentAirData.map(c => `${c.name}: AQI ${c.aqi}`).join('\n');
+            let report = "التقرير البيئي الشامل - EcoData Saudi\n";
+            report += "=".repeat(40) + "\n\n";
+            report += "جودة الهواء:\n";
+            currentAirData.forEach(c => report += `${c.name}: AQI ${c.aqi} (${c.status.text})\n`);
+            report += `\nمحطات النفايات: ${stations.length} محطة\n`;
+            report += `الأراضي الزراعية: 1.7 مليون هكتار\n`;
             const blob = new Blob([report], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'report.txt';
+            link.download = 'EcoData_Report.txt';
             link.click();
-            alert('✅ تم التحميل');
+            alert('✅ تم تحميل التقرير');
         }
         
         function shareReport() {
             const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi})`;
+            const text = `EcoData Saudi | أنقى مدينة: ${best?.name} (AQI ${best?.aqi}) | ${stations.length} محطة نفايات | 1.7M هكتار أراضٍ زراعية`;
             if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
-            else alert('تم نسخ التقرير');
+            else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
         }
         
         function showTab(tabId) {
@@ -535,14 +558,14 @@
         
         document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('✅ شكراً للاشتراك');
+            alert('✅ شكراً للاشتراك في النشرة البريدية');
             this.reset();
         });
         
         async function fetchAllData() {
-            let spinner = document.createElement('div');
+            const spinner = document.createElement('div');
             spinner.className = 'spinner';
-            spinner.innerHTML = '<div></div><p>جاري التحميل...</p>';
+            spinner.innerHTML = '<div></div><p>جاري تحميل البيانات...</p>';
             document.body.appendChild(spinner);
             await fetchAirQuality();
             displayStationsTable();
