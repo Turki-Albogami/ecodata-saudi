@@ -153,20 +153,26 @@
             <section>
                 <h2>💧 شبكة رصد المياه في المملكة (البيانات الحقيقية)</h2>
                 <div class="investor-card" style="background: linear-gradient(135deg, #1e293b, #2d3a4e); color: white;">
-                    <h3 style="color: white;">📊 إجمالي مواقع الرصد</h3>
-                    <p><strong>🌊 المياه السطحية:</strong> 652 موقعاً | <strong>💧 المياه الجوفية:</strong> 1,125 موقعاً | <strong>📌 الإجمالي:</strong> 1,777 موقع رصد</p>
-                    <p>📅 فترة القياس: 2024-2025 | المصدر: وزارة البيئة والمياه والزراعة</p>
+                    <h3 style="color: white;">📊 إجمالي مواقع الرصد (2024-2025)</h3>
+                    <p><strong>🌊 المياه السطحية (Surface Water):</strong> 652 موقعاً | <strong>💧 المياه الجوفية (Groundwater):</strong> 1,125 موقعاً</p>
+                    <p><strong>📌 الإجمالي العام:</strong> 1,777 موقع رصد معتمد من وزارة البيئة والمياه والزراعة.</p>
                 </div>
+                
+                <!-- جدول المياه المُعاد تنسيقه -->
                 <div id="waterTable"></div>
+                
                 <div class="two-columns" style="margin-top:20px">
-                    <div><h3>توزيع مواقع الرصد حسب المناطق</h3><canvas id="waterBarChart"></canvas></div>
+                    <div><h3>توزيع مواقع الرصد حسب المناطق</h3>
+                        <!-- إضافة رسم بياني شريطي أفقي لعرض أفضل للأسماء -->
+                        <canvas id="waterBarChart" style="max-height: 500px;"></canvas>
+                    </div>
                     <div class="investor-card">
                         <h3>💡 تحليل استثماري</h3>
                         <ul>
                             <li>✅ <strong>منطقة الرياض</strong>: الأعلى في المياه السطحية (198 موقعاً)</li>
                             <li>✅ <strong>منطقة مكة المكرمة</strong>: الأعلى في المياه الجوفية (283 موقعاً)</li>
-                            <li>✅ فرص استثمارية في محطات معالجة المياه</li>
-                            <li>✅ أنظمة ري ذكية للمناطق الزراعية</li>
+                            <li>✅ <strong>منطقة عسير</strong>: إجمالي مواقع مرتفع (230 موقعاً) مناسب للاستثمار الزراعي.</li>
+                            <li>✅ فرص استثمارية في محطات معالجة المياه وتقنيات الري الحديث.</li>
                         </ul>
                     </div>
                 </div>
@@ -346,7 +352,7 @@
             { id: 53, name: "Al-Leeth", type: "Solar", capacity: 3.0, year: 2029, status: "Tendered", region: "Makkah", city: "Al-Leeth", lat: 20.1428, lon: 40.2720, developer: "TBA" }
         ];
 
-        // ==================== بيانات المياه الحقيقية (من ملفك) ====================
+        // ==================== بيانات المياه الحقيقية (مرتبة من ملفك) ====================
         const waterData = [
             { region: "الباحة", surface: 38, groundwater: 75, total: 113 },
             { region: "الجوف", surface: 8, groundwater: 104, total: 112 },
@@ -500,12 +506,12 @@
             for (let city in byCity) summary += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
             summary += '</ul>';
             document.getElementById('stationsSummary').innerHTML = summary;
-            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th><tr></thead><tbody>`;
+            let html = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th></tr></thead><tbody>`;
             stations.forEach(s => {
                 let statusText = s.status === 'Seasonal' ? '🟡 موسمية' : s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل';
-                html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusText}</td></tr>`;
+                html += `<tr><td style="padding: 8px;">${s.id}</td><td style="padding: 8px;">${s.name}</td><td style="padding: 8px;">${s.city}</td><td style="padding: 8px;">${statusText}</td></tr>`;
             });
-            document.getElementById('stationsTable').innerHTML = html + `</tbody></table></div>`;
+            document.getElementById('stationsTable').innerHTML = html + `</tbody>｜DSML｜</div>`;
         }
 
         function showStationsOnMap() {
@@ -531,22 +537,24 @@
 
         // المياه - عرض الجدول والرسم البياني
         function displayWaterTable() {
-            let html = `<div class="table-wrapper"><tr><thead>运转<th>المنطقة</th><th>مواقع المياه السطحية</th><th>مواقع المياه الجوفية</th><th>الإجمالي</th></tr></thead><tbody>`;
+            // عرض الجدول بشكل مرتب
+            let html = `<div class="table-wrapper"><table><thead>运转<th>المنطقة</th><th>مواقع المياه السطحية</th><th>مواقع المياه الجوفية</th><th>الإجمالي</th></tr></thead><tbody>`;
             waterData.forEach(w => {
                 html += `<tr>
-                    <td><strong>${w.region}</strong></td>
-                    <td>${w.surface} موقع</span></td>
-                    <td>${w.groundwater} موقع</span></td>
-                    <td>${w.total} موقع</span></td>
+                    <td style="text-align: right; font-weight: bold;">${w.region}</td>
+                    <td>${w.surface} موقع</td>
+                    <td>${w.groundwater} موقع</td>
+                    <td style="background-color: #e8f5e9;">${w.total} موقع</td>
                 </tr>`;
             });
             html += `</tbody></table></div>`;
             document.getElementById('waterTable').innerHTML = html;
             
-            // رسم بياني للمياه
+            // رسم بياني (Bar Chart) عرض رأسي مع تحسين النصوص
             const ctx = document.getElementById('waterBarChart')?.getContext('2d');
             if (ctx) {
-                new Chart(ctx, {
+                if (window.waterChart) window.waterChart.destroy();
+                window.waterChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: waterData.map(w => w.region),
@@ -555,7 +563,22 @@
                             { label: 'المياه الجوفية', data: waterData.map(w => w.groundwater), backgroundColor: '#22c55e', borderRadius: 8 }
                         ]
                     },
-                    options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, title: { display: true, text: 'عدد المواقع' } } } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: 'y', // تحويل الرسم البياني إلى أفقي لتكون أسماء المناطق أوضح
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.raw} موقع` } }
+                        },
+                        scales: {
+                            x: { title: { display: true, text: 'عدد المواقع', font: { size: 14 } } },
+                            y: { 
+                                title: { display: true, text: 'المناطق', font: { size: 14 } },
+                                ticks: { font: { size: 12, family: 'Segoe UI' } }
+                            }
+                        }
+                    }
                 });
             }
         }
@@ -580,15 +603,7 @@
             let tableHtml = `<div class="table-wrapper"><table><thead><tr><th>#</th><th>المشروع</th><th>النوع</th><th>السعة (GW)</th><th>السنة</th><th>الحالة</th><th>المطور</th></tr></thead><tbody>`;
             energyProjects.forEach(p => {
                 let statusClass = p.status === 'Installed' ? '🟢' : (p.status === 'PPA Signed' ? '🟡' : '🔵');
-                tableHtml += `<tr>
-                    <td style="padding: 8px;">${p.id}</td>
-                    <td style="padding: 8px;">${p.name}</td>
-                    <td style="padding: 8px;">${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td>
-                    <td style="padding: 8px;">${p.capacity}</td>
-                    <td style="padding: 8px;">${p.year}</td>
-                    <td style="padding: 8px;">${statusClass} ${p.status}</td>
-                    <td style="padding: 8px;">${p.developer}</td>
-                </tr>`;
+                tableHtml += `<tr><td style="padding: 8px;">${p.id}</td><td style="padding: 8px;">${p.name}</td><td style="padding: 8px;">${p.type === 'Solar' ? '☀️ شمسية' : '💨 رياح'}</td><td style="padding: 8px;">${p.capacity}</td><td style="padding: 8px;">${p.year}</td><td style="padding: 8px;">${statusClass} ${p.status}</td><td style="padding: 8px;">${p.developer}</td></tr>`;
             });
             document.getElementById('energyProjectsTable').innerHTML = tableHtml + `</tbody></table></div>`;
         }
