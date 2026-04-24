@@ -76,7 +76,7 @@
     <header>
         <div class="container">
             <h1>🌿 EcoData Saudi <span>المرجع البيئي الشامل</span></h1>
-            <p>جودة الهواء | إدارة النفايات | الموارد المائية | الطاقة المتجددة</p>
+            <p>جودة الهواء | إدارة النفايات | الموارد المائية | الطاقة المتجددة | محطات نقل النفايات</p>
             <div class="last-update">
                 آخر تحديث: <span id="updateTime">جاري التحميل...</span>
                 <button class="refresh-btn" onclick="fetchAllData()">🔄 تحديث الآن</button>
@@ -111,11 +111,12 @@
             <button class="tab-btn" onclick="showTab('waste-tab')">🗑️ النفايات</button>
             <button class="tab-btn" onclick="showTab('water-tab')">💧 المياه</button>
             <button class="tab-btn" onclick="showTab('energy-tab')">☀️ الطاقة</button>
+            <button class="tab-btn" onclick="showTab('stations-tab')">🚛 محطات النفايات</button>
             <button class="tab-btn" onclick="showTab('investors-tab')">💼 للمستثمرين</button>
             <button class="tab-btn" onclick="showTab('dashboard-tab')">📊 لوحة تحكمي</button>
         </div>
 
-        <!-- جودة الهواء -->
+        <!-- تبويب جودة الهواء -->
         <div id="air-tab" class="tab-content active">
             <section>
                 <h2>📈 مؤشرات جودة الهواء</h2>
@@ -138,7 +139,7 @@
             </section>
         </div>
 
-        <!-- النفايات -->
+        <!-- تبويب النفايات -->
         <div id="waste-tab" class="tab-content">
             <section>
                 <h2>🗑️ إحصاءات النفايات البلدية</h2>
@@ -150,7 +151,7 @@
             </section>
         </div>
 
-        <!-- المياه -->
+        <!-- تبويب المياه -->
         <div id="water-tab" class="tab-content">
             <section>
                 <h2>💧 الموارد المائية</h2>
@@ -162,7 +163,7 @@
             </section>
         </div>
 
-        <!-- الطاقة -->
+        <!-- تبويب الطاقة -->
         <div id="energy-tab" class="tab-content">
             <section>
                 <h2>☀️ الطاقة المتجددة</h2>
@@ -174,7 +175,28 @@
             </section>
         </div>
 
-        <!-- المستثمرين -->
+        <!-- تبويب محطات النفايات -->
+        <div id="stations-tab" class="tab-content">
+            <section>
+                <h2>🗺️ محطات نقل النفايات</h2>
+                <div class="two-columns">
+                    <div>
+                        <p><strong>📍 عدد المحطات:</strong> <span id="stationsCount">27</span></p>
+                        <p><strong>🏙️ المدن المشمولة:</strong> الرياض، جدة، الدمام، مكة، القصيم</p>
+                        <p><strong>📊 التوزيع:</strong></p>
+                        <div id="stationsSummary"></div>
+                    </div>
+                    <div>
+                        <button onclick="showStationsOnMap()" class="btn">🗺️ عرض المحطات على الخريطة</button>
+                        <button onclick="exportStationsData()" class="btn" style="background:#eab308;">📥 تحميل البيانات (CSV)</button>
+                    </div>
+                </div>
+                <div id="stationsMap" class="map-container" style="height: 500px; display: none;"></div>
+                <div id="stationsTable" style="margin-top: 20px; overflow-x: auto;"></div>
+            </section>
+        </div>
+
+        <!-- تبويب المستثمرين -->
         <div id="investors-tab" class="tab-content">
             <section>
                 <h2>📊 تقارير وتحليلات</h2>
@@ -189,7 +211,7 @@
             </section>
         </div>
 
-        <!-- لوحة التحكم -->
+        <!-- تبويب لوحة التحكم -->
         <div id="dashboard-tab" class="tab-content">
             <section>
                 <h2>📊 لوحة تحكم المستثمر</h2>
@@ -225,7 +247,7 @@
     <footer>
         <div class="container">
             <p>© 2025 EcoData Saudi - المرجع البيئي الرقمي للمملكة العربية السعودية</p>
-            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | تحديث كل ساعة</p>
+            <p style="font-size: 12px;">بيانات جودة الهواء: Open-Meteo API | محطات النفايات: المركز الوطني لإدارة النفايات</p>
             <button onclick="shareReport()" style="background:#ffd700; color:#0d5c2e; border:none; padding:8px 16px; border-radius:20px; margin-top:10px; cursor:pointer;">📤 مشاركة التقرير</button>
         </div>
     </footer>
@@ -235,7 +257,9 @@
         let map = null;
         let chart = null;
         let favoriteCities = JSON.parse(localStorage.getItem('favoriteCities') || '[]');
+        let stationsMap = null;
         
+        // بيانات النفايات
         const wasteData = [
             { city: 'الرياض', totalWaste: 4500, organic: 45, plastic: 18, recyclingRate: 15 },
             { city: 'جدة', totalWaste: 3200, organic: 48, plastic: 20, recyclingRate: 12 },
@@ -258,6 +282,38 @@
             { name: 'حائل', lat: 27.5214, lon: 41.6907 }
         ];
         
+        // بيانات محطات نقل النفايات (27 محطة)
+        const stations = [
+            { id: "TS1", name: "Al Janadriyyah Transfer station", city: "Riyadh", lat: 21.62699, lon: 46.08904, status: "Unconfirmed", cluster: "Riyadh" },
+            { id: "TS2", name: "Al Shmal & Maathar Transfer station", city: "Riyadh", lat: 25.15213, lon: 46.83394, status: "Unconfirmed", cluster: "Riyadh" },
+            { id: "TS3", name: "Al Uraija Transfer station", city: "Riyadh", lat: 24.85331, lon: 46.57790, status: "Unconfirmed", cluster: "Riyadh" },
+            { id: "TS4", name: "Shifa Transfer station", city: "Riyadh", lat: 24.87694, lon: 46.57308, status: "Unconfirmed", cluster: "Riyadh" },
+            { id: "TS5", name: "Breman Transfer station", city: "Jeddah", lat: 21.47637, lon: 39.29760, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS6", name: "Dammam East Transfer station", city: "Dammam", lat: 21.47778, lon: 50.13859, status: "Unconfirmed", cluster: "Dammam" },
+            { id: "TS7", name: "Dammam North Transfer station", city: "Dammam", lat: 26.41305, lon: 50.04538, status: "Unconfirmed", cluster: "Dammam" },
+            { id: "TS8", name: "Dammam West Transfer station", city: "Dammam", lat: 26.44898, lon: 50.00007, status: "Unconfirmed", cluster: "Dammam" },
+            { id: "TS9", name: "Dammam South (Khobar, Dhahran) Transfer station", city: "Dammam", lat: 26.39683, lon: 50.10242, status: "Unconfirmed", cluster: "Dammam" },
+            { id: "TS10", name: "Qatif (3 TS in one location) Transfer station", city: "Dammam", lat: 26.23264, lon: 49.92467, status: "Unconfirmed", cluster: "Dammam" },
+            { id: "TS11", name: "Dhahban/Asfan Transfer station", city: "Riyadh", lat: 26.53540, lon: 46.72513, status: "Unconfirmed", cluster: "Riyadh" },
+            { id: "TS12", name: "Airport 2 Transfer station", city: "Jeddah", lat: 21.84216, lon: 39.20079, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS13", name: "Airport 1 Transfer station", city: "Jeddah", lat: 21.60812, lon: 39.15333, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS14", name: "Alnakheel Transfer station", city: "Jeddah", lat: 21.62699, lon: 39.19740, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS15", name: "Kuzam Transfer station", city: "Jeddah", lat: 21.63178, lon: 39.20323, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS16", name: "Salam Transfer station", city: "Jeddah", lat: 21.52978, lon: 39.25409, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS17", name: "Aljawharah Transfer station", city: "Jeddah", lat: 21.44634, lon: 39.19254, status: "Unconfirmed", cluster: "Jeddah" },
+            { id: "TS18", name: "Bahra Transfer station", city: "Jeddah", lat: 21.43531, lon: 39.25499, status: "Closed", cluster: "Jeddah" },
+            { id: "TS19", name: "Al Jumum Transfer station", city: "Jeddah", lat: 21.59884, lon: 39.24617, status: "Seasonal", cluster: "Jeddah" },
+            { id: "TS20", name: "Huraymila Transfer station", city: "Makkah", lat: 21.44209, lon: 39.80745, status: "Unconfirmed", cluster: "Makkah" },
+            { id: "TS21", name: "Salama Transfer station", city: "Makkah", lat: 26.44332, lon: 39.88847, status: "Unconfirmed", cluster: "Makkah" },
+            { id: "TS22", name: "Al Kakiyyah Transfer Station", city: "Makkah", lat: 21.59884, lon: 39.56566, status: "Seasonal", cluster: "Makkah" },
+            { id: "TS23", name: "Alaziziyyah Transfer Station", city: "Makkah", lat: 21.36728, lon: 39.68627, status: "Seasonal", cluster: "Makkah" },
+            { id: "TS24", name: "Muzdalifah Transfer Station", city: "Makkah", lat: 21.38547, lon: 39.93731, status: "Seasonal", cluster: "Makkah" },
+            { id: "TS25", name: "Arafat Transfer Station", city: "Makkah", lat: 21.46143, lon: 39.98983, status: "Seasonal", cluster: "Makkah" },
+            { id: "TS26", name: "Al-Ma'isam Transfer Station", city: "Makkah", lat: 21.59703, lon: 39.90480, status: "Seasonal", cluster: "Makkah" },
+            { id: "TS27", name: "TS Buraydah", city: "Al Qassim", lat: 21.35508, lon: 43.97081, status: "Unconfirmed", cluster: "Al Qassim" }
+        ];
+        
+        // دوال مساعدة
         function calculateAQI(pm25) {
             if (!pm25 || isNaN(pm25)) return 50;
             if (pm25 <= 12) return Math.round((50/12) * pm25);
@@ -291,6 +347,7 @@
             if (spinner) spinner.remove();
         }
         
+        // جلب بيانات جودة الهواء
         async function fetchAirQuality() {
             let results = [];
             for (const city of cities) {
@@ -333,8 +390,8 @@
                 html += `<tr>
                     <td><strong>${city.name}</strong></td>
                     <td><span style="font-size:24px;color:${color}">${city.aqi}</span></td>
-                    <td>${city.pm25 || '—'} µg/m³</td>
-                    <td>${city.pm10 || '—'} µg/m³</td>
+                    <td>${city.pm25 || '—'} µg/m³</span></td>
+                    <td>${city.pm10 || '—'} µg/m³</span></td>
                     <td><span class="status-badge ${city.status.class}">${city.status.icon} ${city.status.text}</span></td>
                     <td><input type="checkbox" class="fav-checkbox" value="${city.name}" ${isChecked} onchange="updateFavoriteFromCheckbox()" style="width:20px;height:20px;cursor:pointer;"></td>
                 </tr>`;
@@ -402,6 +459,7 @@
                 <p>✅ <strong>أفضل مدينة للاستثمار السياحي:</strong> ${best?.name} (AQI ${best?.aqi})</p>
                 <p>⚠️ <strong>مدن تحتاج دراسة إضافية:</strong> ${worst?.name} (AQI ${worst?.aqi})</p>
                 <p>📈 <strong>القطاعات الواعدة:</strong> إعادة التدوير (نسبة التدوير 18%)، تحلية المياه بالطاقة الشمسية، الهيدروجين الأخضر.</p>
+                <p>🚛 <strong>فرصة استثمارية في النفايات:</strong> يوجد ${stations.length} محطة نقل نفايات موزعة في 5 مدن.</p>
             </div>`;
         }
         
@@ -459,10 +517,11 @@
             }
         }
         
+        // دوال النفايات والمياه والطاقة
         function displayWasteTable() {
             let html = `<table><thead><tr><th>المدينة</th><th>إجمالي النفايات (طن/يوم)</th><th>عضوي (%)</th><th>بلاستيك (%)</th><th>نسبة التدوير (%)</th></tr></thead><tbody>`;
             for (const w of wasteData) {
-                html += `<tr><td><strong>${w.city}</strong></td><td>${w.totalWaste.toLocaleString()}</td><td>${w.organic}%</td><td>${w.plastic}%</td><td>${w.recyclingRate}%</td></tr>`;
+                html += `<tr><td><strong>${w.city}</strong></td><td>${w.totalWaste.toLocaleString()}</td><td>${w.organic}%</span></td><td>${w.plastic}%</span></td><td>${w.recyclingRate}%</span></td></tr>`;
             }
             document.getElementById('wasteTable').innerHTML = html + `</tbody></table>`;
             new Chart(document.getElementById('wasteChart'), { type: 'doughnut', data: { labels: ['عضوي', 'بلاستيك', 'ورق', 'زجاج', 'معادن'], datasets: [{ data: [45, 19, 11, 5, 4], backgroundColor: ['#22c55e', '#3b82f6', '#f97316', '#8b5cf6', '#ef4444'] }] } });
@@ -470,11 +529,11 @@
         
         function displayWaterTable() {
             const total = waterData.desalination + waterData.groundwater + waterData.treatedWastewater + waterData.surfaceWater;
-            let html = `</table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>تحلية المياه</td><td>${waterData.desalination.toLocaleString()}</td><td>${Math.round(waterData.desalination/total*100)}%</td></tr>
-                <tr><td>المياه الجوفية</td><td>${waterData.groundwater.toLocaleString()}</td><td>${Math.round(waterData.groundwater/total*100)}%</td></tr>
-                <tr><td>مياه معالجة</td><td>${waterData.treatedWastewater.toLocaleString()}</td><td>${Math.round(waterData.treatedWastewater/total*100)}%</td></tr>
-                <tr><td>المياه السطحية</td><td>${waterData.surfaceWater.toLocaleString()}</td><td>${Math.round(waterData.surfaceWater/total*100)}%</td></tr>
+            let html = `<table><thead><tr><th>المصدر</th><th>الكمية (مليون م³/سنة)</th><th>النسبة</th></tr></thead><tbody>
+                <tr><td>تحلية المياه</span></td><td>${waterData.desalination.toLocaleString()}</td><td>${Math.round(waterData.desalination/total*100)}%</span></tr>
+                <tr><td>المياه الجوفية</span></td><td>${waterData.groundwater.toLocaleString()}</td><td>${Math.round(waterData.groundwater/total*100)}%</span></tr>
+                <tr><td>مياه معالجة</span></td><td>${waterData.treatedWastewater.toLocaleString()}</td><td>${Math.round(waterData.treatedWastewater/total*100)}%</span></tr>
+                <tr><td>المياه السطحية</span></td><td>${waterData.surfaceWater.toLocaleString()}</td><td>${Math.round(waterData.surfaceWater/total*100)}%</span></tr>
             </tbody></table>`;
             document.getElementById('waterTable').innerHTML = html;
             new Chart(document.getElementById('waterSourceChart'), { type: 'pie', data: { labels: ['تحلية', 'جوفية', 'معالجة', 'سطحية'], datasets: [{ data: [2100, 1200, 800, 300], backgroundColor: ['#0d5c2e', '#22c55e', '#eab308', '#3b82f6'] }] } });
@@ -482,18 +541,68 @@
         
         function displayEnergyTable() {
             const total = energyData.solar + energyData.wind + energyData.greenHydrogen + energyData.fossil;
-            let html = `<tr><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
-                <tr><td>الطاقة الشمسية</td><td>${energyData.solar}</td><td>${Math.round(energyData.solar/total*100)}%</td></tr>
-                <tr><td>طاقة الرياح</td><td>${energyData.wind}</td><td>${Math.round(energyData.wind/total*100)}%</td></tr>
-                <tr><td>الهيدروجين الأخضر</td><td>${energyData.greenHydrogen}</td><td>${Math.round(energyData.greenHydrogen/total*100)}%</td></tr>
-                <tr><td>الوقود الأحفوري</td><td>${energyData.fossil}</td><td>${Math.round(energyData.fossil/total*100)}%</td></tr>
+            let html = `<table><thead><tr><th>المصدر</th><th>السعة (جيجاواط)</th><th>النسبة</th></tr></thead><tbody>
+                <tr><td>الطاقة الشمسية</span></td><td>${energyData.solar}</td><td>${Math.round(energyData.solar/total*100)}%</span></tr>
+                <tr><td>طاقة الرياح</span></td><td>${energyData.wind}</td><td>${Math.round(energyData.wind/total*100)}%</span></tr>
+                <tr><td>الهيدروجين الأخضر</span></td><td>${energyData.greenHydrogen}</td><td>${Math.round(energyData.greenHydrogen/total*100)}%</span></tr>
+                <tr><td>الوقود الأحفوري</span></td><td>${energyData.fossil}</td><td>${Math.round(energyData.fossil/total*100)}%</span></tr>
             </tbody></table>`;
             document.getElementById('energyTable').innerHTML = html;
             new Chart(document.getElementById('energyMixChart'), { type: 'bar', data: { labels: ['شمسية', 'رياح', 'هيدروجين', 'أحفوري'], datasets: [{ label: 'جيجاواط', data: [28, 16, 15, 120], backgroundColor: '#eab308', borderRadius: 8 }] } });
         }
         
+        // دوال محطات النفايات
+        function displayStationsTable() {
+            const byCity = {};
+            stations.forEach(s => byCity[s.city] = (byCity[s.city] || 0) + 1);
+            let summaryHtml = '<ul>';
+            for (let city in byCity) summaryHtml += `<li><strong>${city}</strong>: ${byCity[city]} محطة</li>`;
+            summaryHtml += '</ul>';
+            document.getElementById('stationsSummary').innerHTML = summaryHtml;
+            
+            let html = `<table><thead><tr><th>#</th><th>الاسم</th><th>المدينة</th><th>الحالة</th><th>الرابط</th></tr></thead><tbody>`;
+            stations.forEach((s, i) => {
+                let statusColor = s.status === 'Seasonal' ? '🟡 موسمية' : (s.status === 'Closed' ? '🔴 مغلقة' : '🟢 قيد التشغيل');
+                html += `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.city}</td><td>${statusColor}</td><td><a href="https://www.google.com/maps/place/${s.lat},${s.lon}" target="_blank">📍 عرض على الخريطة</a></td></tr>`;
+            });
+            document.getElementById('stationsTable').innerHTML = html + `</tbody></tr>`;
+        }
+        
+        function showStationsOnMap() {
+            const mapContainer = document.getElementById('stationsMap');
+            mapContainer.style.display = 'block';
+            mapContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            if (stationsMap) stationsMap.remove();
+            
+            stationsMap = L.map('stationsMap').setView([24.0, 45.0], 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(stationsMap);
+            
+            stations.forEach(station => {
+                let markerColor = station.status === 'Seasonal' ? 'orange' : (station.status === 'Closed' ? 'red' : 'green');
+                let popupContent = `<b>${station.name}</b><br>📍 ${station.city}<br>🟢 الحالة: ${station.status}<br>🆔 ${station.id}`;
+                
+                L.marker([station.lat, station.lon], {
+                    icon: L.divIcon({ html: `<div style="background:${markerColor}; width:12px; height:12px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [12,12] })
+                }).bindPopup(popupContent).addTo(stationsMap);
+            });
+        }
+        
+        function exportStationsData() {
+            let csv = "ID,Name,City,Status,Latitude,Longitude\n";
+            stations.forEach(s => {
+                csv += `${s.id},${s.name},${s.city},${s.status},${s.lat},${s.lon}\n`;
+            });
+            const blob = new Blob([csv], {type: 'text/csv'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'waste_transfer_stations.csv';
+            link.click();
+            alert('✅ تم تصدير بيانات المحطات');
+        }
+        
         function downloadFullReport() {
-            let report = "EcoData Saudi - التقرير البيئي الشامل\n" + "=".repeat(50) + `\nالتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n1. جودة الهواء:\n${currentAirData.map(c => `   - ${c.name}: AQI ${c.aqi}`).join('\n')}\n\n2. النفايات:\n   - إجمالي يومي: ${wasteData.reduce((s,w)=>s+w.totalWaste,0).toLocaleString()} طن\n   - متوسط التدوير: 13%\n\n3. المياه:\n   - تحلية: 2100 مليون م³\n   - مياه معالجة: 800 مليون م³\n\n4. الطاقة المتجددة:\n   - هدف 2030: 50% من الكهرباء\n   - مشاريع: سدير، دومة الجندل، نيوم\n\n` + "=".repeat(50) + "\nللاستفسارات: ecodata@saudi.com";
+            let report = "EcoData Saudi - التقرير البيئي الشامل\n" + "=".repeat(50) + `\nالتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\n1. جودة الهواء:\n${currentAirData.map(c => `   - ${c.name}: AQI ${c.aqi}`).join('\n')}\n\n2. النفايات:\n   - إجمالي يومي: ${wasteData.reduce((s,w)=>s+w.totalWaste,0).toLocaleString()} طن\n   - متوسط التدوير: 13%\n\n3. المياه:\n   - تحلية: 2100 مليون م³\n   - مياه معالجة: 800 مليون م³\n\n4. الطاقة المتجددة:\n   - هدف 2030: 50% من الكهرباء\n\n5. محطات نقل النفايات:\n   - عدد المحطات: ${stations.length}\n   - موزعة في: الرياض، جدة، الدمام، مكة، القصيم\n\n` + "=".repeat(50) + "\nللاستفسارات: ecodata@saudi.com";
             const blob = new Blob([report], {type: 'text/plain'});
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -505,7 +614,7 @@
         function shareReport() {
             if (!currentAirData.length) return;
             const best = currentAirData.sort((a,b) => a.aqi - b.aqi)[0];
-            const text = `🌿 EcoData Saudi\n📊 مراقبة ${currentAirData.length} مدينة\n🏆 أنقى مدينة: ${best?.name} (AQI ${best?.aqi})\n🎯 هدف 2030: 50% طاقة متجددة`;
+            const text = `🌿 EcoData Saudi\n📊 مراقبة ${currentAirData.length} مدينة\n🏆 أنقى مدينة: ${best?.name} (AQI ${best?.aqi})\n🚛 ${stations.length} محطة نفايات\n🎯 هدف 2030: 50% طاقة متجددة`;
             if (navigator.share) navigator.share({ title: 'EcoData Saudi', text: text });
             else { navigator.clipboard.writeText(text); alert('✅ تم نسخ التقرير'); }
         }
@@ -520,7 +629,7 @@
         document.getElementById('newsletterForm')?.addEventListener('submit', function(e) { e.preventDefault(); alert(`✅ شكراً ${document.getElementById('subName').value}! تم تسجيل بريدك.`); this.reset(); });
         document.getElementById('contactForm')?.addEventListener('submit', function(e) { e.preventDefault(); alert('✅ شكراً لتواصلك! سنرد خلال 24 ساعة'); this.reset(); });
         
-        async function fetchAllData() { showLoading(); await fetchAirQuality(); displayWasteTable(); displayWaterTable(); displayEnergyTable(); hideLoading(); }
+        async function fetchAllData() { showLoading(); await fetchAirQuality(); displayWasteTable(); displayWaterTable(); displayEnergyTable(); displayStationsTable(); hideLoading(); }
         
         fetchAllData();
         setInterval(fetchAllData, 3600000);
